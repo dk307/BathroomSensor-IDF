@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="media/favicon.png" type="image/x-icon">
+  <link rel="icon" href="media/favicon.png" type="image/x-icon">
+  <title>Debug</title>
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+
+  <style>
+    .logs {
+      white-space: -moz-pre-wrap;
+      white-space: -o-pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar bg-light fixed-top">
+    <div class="container-fluid">
+      <div class="row justify-content-start">
+        <div class="col">
+          <div class="btn-group mx-3">
+            <button type="button" class="btn btn-outline-primary" id="startWebLoggingId">Start Web logging</button>
+            <button type="button" class="btn btn-outline-primary" id="stopWebLoggingId">Stop Web logging</button>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="btn-group mx-3">
+            <button type="button" class="btn btn-outline-primary" id="startSDLoggingId">Start SD Card logging</button>
+            <button type="button" class="btn btn-outline-primary" id="stopSDLoggingId">Stop SD Card logging</button>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <div class="input-group">
+            <span class="input-group-text">Tag</span>
+            <input type="text" class="form-control" placeholder="Tag to change logging level" id="loggingTag">
+            <button class="btn btn-outline-secondary" type="button" id="debugTag">Debug</button>
+            <button class="btn btn-outline-secondary" type="button" id="infoTag">Info</button>
+            <button class="btn btn-outline-secondary" type="button" id="warnTag">Warn</button>
+            <button class="btn btn-outline-secondary" type="button" id="errorTag">Error</button>
+          </div>
+        </div>
+
+        <div class="col-2">
+          <div class="input-group">
+            <select class="form-select" id="commandId">
+              <option selected>Choose command...</option>
+              <option value="up-time">up-time</option>
+              <option value="cpu-dump">cpu-dump</option>
+              <option value="mem-dump">mem-dump</option>
+              <option value="task-dump">task-dump</option>
+              <option value="sock-dump">sock-dump</option>
+            </select>
+            <button class="btn btn-outline-secondary" type="button" id="commandButtonId">Run</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="modal-body">
+    <pre class="logs">
+      <code id="logsBlock"></code>
+    </pre>
+  </div>
+
+  <script src="/js/s.js"></script>
+  <script src="/js/extra/ansi_up.js"></script>
+
+  <script>
+    var logsSource;
+    var ansi_up = new AnsiUp;
+
+    function appendLogs(e) {
+      var data = e.data;
+      if (data != null) {
+        var logsBlock = $('#logsBlock');
+        data = ansi_up.ansi_to_html(data);
+        logsBlock.html(logsBlock.html() + data + "\r\n");
+      }
+    }
+
+    $(document).ready(function () {
+      $('#logsBlock').text('');
+      logsSource = new EventSource('/logs');
+      logsSource.addEventListener("logs", appendLogs);
+    });
+
+    function ajaxPost(url, data, text) {
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        success: function (data) {
+          alert(text + " success");
+        },
+        error: function () {
+          alert(text + " failed");
+        }
+      });
+    }
+
+    function setTagLoggingLevel(level) {
+      var tag = $("#loggingTag").val();
+
+      if (tag === "") {
+        alert("No logging tag specified");
+      }
+
+      var data = { 'tag': tag, 'level': level };
+      ajaxPost("/api/log/loglevel", $.param(data), "Logging level change");
+    }
+
+    document.getElementById('startWebLoggingId').addEventListener('click', function () {
+      ajaxPost("/api/log/webstart", "", "Web Logging enable");
+    });
+
+    document.getElementById('stopWebLoggingId').addEventListener('click', function () {
+      ajaxPost("/api/log/webstop", "", "Web Logging disable");
+    });
+
+    document.getElementById('startSDLoggingId').addEventListener('click', function () {
+      ajaxPost("/api/log/sdstart", "", "SD Card Logging enable");
+    });
+
+    document.getElementById('stopSDLoggingId').addEventListener('click', function () {
+      ajaxPost("/api/log/sdstop", "", "SD Card Logging disable");
+    });
+
+    document.getElementById('debugTag').addEventListener('click', function () {
+      setTagLoggingLevel(4);
+    });
+
+    document.getElementById('infoTag').addEventListener('click', function () {
+      setTagLoggingLevel(3);
+    });
+
+    document.getElementById('warnTag').addEventListener('click', function () {
+      setTagLoggingLevel(2);
+    });
+
+    document.getElementById('errorTag').addEventListener('click', function () {
+      setTagLoggingLevel(1);
+    });
+
+    document.getElementById('commandButtonId').addEventListener('click', function () {
+      var command = $('#commandId').val();
+      var data = { 'command': command };
+      ajaxPost("/api/log/run", $.param(data), command + " execution");
+    });
+
+  </script>
+
+</body>
+
+</html>

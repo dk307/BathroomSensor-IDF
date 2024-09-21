@@ -1,0 +1,35 @@
+{
+  "name": "esp8266-filesystem-builder",
+  "description": "Gulp based build system for ESP8266 file system files",
+  "main": "gulpfile.js",
+  "devDependencies": {
+    "browser-sync": "^2.27.9",
+    "fancy-log": "^2.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-csslint": "^1.0.0",
+    "gulp-gzip": "^1.4.0",
+    "gulp-htmllint": "0.0.19",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-minify": "^3.1.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.0.0",
+    "gulp-strip-comments": "^2.5.2",
+    "gulp-watch": "^5.0.1"
+  },
+  "dependencies": {
+    "@fontsource/montserrat": "^4.5.14",
+    "cli": "^1.0.1",
+    "eslint": "^8.36.0",
+    "gulp": "^4.0.2",
+    "gulp-html": "^5.0.0",
+    "gulp-html-minifier": "^0.1.8",
+    "gulp-html-minifier-terser": "^7.1.0",
+    "gulp-imagemin": "^7.1.0",
+    "gulp-run": "^1.7.1",
+    "image-size": "^1.0.2",
+    "lv_font_conv": "^1.5.2",
+    "lv_img_conv": "^0.4.0",
+    "sha.js": "^2.4.11",
+    "typescript": "^5.0.2"
+  }
+}

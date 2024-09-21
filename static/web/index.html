@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="media/favicon.png" type="image/x-icon">
+    <link rel="icon" href="media/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/chartist.min.css" />
+    <title>Main</title>
+    <style>
+        .level {
+            font-weight: bold;
+        }
+
+        .level1 {
+            color: #4BD175;
+            font-weight: bold;
+        }
+
+        .level2 {
+            color: #767C30;
+            font-weight: bold;
+        }
+
+        .level3 {
+            color: #EC9706;
+            font-weight: bold;
+        }
+
+        .level4 {
+            color: #E3242B;
+            font-weight: bold;
+        }
+
+        .level5 {
+            color: #710193;
+            font-weight: bold;
+        }
+
+        .level6 {
+            color: #940606;
+            font-weight: bold;
+        }
+
+        .ct-series-a .ct-line {
+            /* Set the colour of this series line */
+            /* stroke: rgb(3, 30, 5);*/
+            /* Control the thikness of your lines */
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar Start-->
+    <nav class="navbar shadow-lg">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Navbar brand -->
+            <a class="navbar-brand mt-2 mt-sm-0" href="#">
+                <img src="media/logo.png" height="36" alt="Logo" loading="lazy" />
+                <span id="navHostName">Air Quality Sensor</span>
+            </a>
+
+            <!-- Right elements -->
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#settingsModal"
+                    title="Settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-gear me-1" viewBox="0 0 16 16">
+                        <path
+                            d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
+                        <path
+                            d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z" />
+                    </svg>
+                    Settings
+                </button>
+                <button type="button" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#logoutModal"
+                    title="Logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-box-arrow-left me-1" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
+                        <path fill-rule="evenodd"
+                            d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+            <!-- Right elements -->
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar End -->
+
+    <main class="mt-2 pt-2">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                    <div class="card shadow-lg">
+                        <h5 class="card-header">Sensors</h5>
+                        <div class="card-body">
+                            <table class="table table-sm card-text" id="sensors-table">
+                                <tbody id="sensors-table-body"></tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-lg">
+                        <div class="card-header d-flex">
+                            <h5 class="w-50">History</h5>
+                            <div class="w-50">
+                                <form>
+                                    <select class="form-select form-select-sm" id="sensorHistorySelect" disabled>
+                                        <option selected>No sensor found</option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="sensorchart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal Start -->
+        <div class="modal fade" id="settingsModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Settings</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="d-grid gap-3">
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                    data-bs-dismiss="modal" data-bs-target="#websiteLoginModal">Website login</button>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                    data-bs-dismiss="modal" data-bs-target="#otherSettingsModal">Other
+                                    Settings</button>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                    data-bs-dismiss="modal" data-bs-target="#homekitModal">Homekit
+                                </button>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                    data-bs-dismiss="modal" data-bs-target="#informationModal">Information</button>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-info" data-bs-dismiss="modal"
+                                    id="restartDeviceButtonId">Restart</button>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-info" data-bs-dismiss="modal"
+                                    id="firmwareUploadButtonId">Firmware update</button>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                                    id="factoryResetButtonId">Factory Reset</button>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Settings Modal End-->
+
+        <!-- Confirm Action Modal Start-->
+        <form id="confirmActionForm" method="post">
+            <div class="modal fade" id="confirmActionModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-4">
+                                <span class="justify-left">Do you want to&nbsp;</span>
+                                <span class="justify-left" id="confirmAction"></span>
+                                <span class="justify-left">?</span>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="alert alert-danger" role="alert" id="confirmActionStatus"></div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- Confirm Action Modal End -->
+
+        <!-- Logout Modal Start-->
+        <form class="needs-validation" action="/logout.handler" method="post">
+            <div class="modal fade" id="logoutModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <span class="justify-left">Do you want to logout ?</span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- Restart Modal End -->
+
+        <!-- Redirecting Modal Start-->
+        <form method="get" action="/">
+            <div class="modal fade" id="redirectingModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <h5 class="d-inline-flex justify-content-start align-items-center">
+                                <span class="spinner-border text-primary" role="status">
+                                </span>&nbsp;&nbsp;<span id="reloadLoadingMessageId">Loading ...</span>
+                            </h5>
+                            <button type="submit" class="btn btn-info float-end" id="confirmActionModalRedirecting">Load
+                                Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- Redirecting Modal End -->
+
+        <!-- Website Login Modal Start-->
+        <form class="needs-validation" action="/weblogin.update.handler" method="post">
+            <div class="modal fade" id="websiteLoginModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="websiteLoginModalLabel">Website Login</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="input-group mb-4">
+                                <label class="input-group-text" for="webUserName">Username</label>
+                                <input type="text" id="webUserName" name="webUserName" class="form-control" required />
+                            </div>
+
+                            <div class="form-outline mb-2 input-group">
+                                <label class="input-group-text" for="webPassword">Password</label>
+                                <input type="password" id="webPassword" name="webPassword"
+                                    class="form-control form-control" required />
+                                <div class="input-group-text">
+                                    <input class="form-check-input mt-0" type="checkbox" id="webPasswordToggle"
+                                        value="" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- Website Login Modal End -->
+
+        <!-- Other Setings Modal Start-->
+        <form class="needs-validation" action="/othersettings.update.handler" method="post">
+            <div class="modal fade" id="otherSettingsModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Other Settings</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="input-group mb-4">
+                                <label class="input-group-text" for="hostName">Hostname</label>
+                                <input type="text" id="hostName" name="hostName" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- Other Settings Modal End -->
+
+
+        <!-- HomeKit Modal Start-->
+        <div class="modal fade" id="homekitModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Homekit</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <table class="table table-sm table-borderless" id="homekitTable">
+                            <tbody>
+                                <tr>
+                                    <td>Failed to get HomeKit information
+                                    <td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="reenableHomeKitPairingButtonId">Re-enable
+                            Pairing</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                            id="forgetHomeKitPairingButtonId">Forget HomeKit Pairing</button>
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Homekit Modal End -->
+
+        <!-- Information Modal Start-->
+        <div class="modal fade" id="informationModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Information</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <table class="table table-sm table-borderless" id="informationTable">
+                            <tbody>
+                                <tr>
+                                    <td>Failed to get information
+                                    <td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Information Modal End -->
+
+        <!-- File Update Modal Start-->
+        <form class="needs-validation" id="fileUploadUploadForm">
+            <div class="modal fade" id="fileUploadUpdateModal" tabindex="-1" data-bs-backdrop="static"
+                data-bs-keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="fileUploadUpdateModalLabel"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-1">
+                                <div id="selectFileMessageId">Select firmware file for upload and upgrade</div>
+                            </div>
+                            <div class="mb-4">
+                                <input class="form-control" id="fileUploadFileUploadId" type="file"
+                                    name="fileUploadFileUploadId" required />
+                            </div>
+                            <div class="mb-2" id="fileUploadUploadStatusWrapper">
+                                <div>Upload Status:</div>
+                                <div class="progress" style="height: 18px;">
+                                    <div id="fileUploadUploadProgressBar" class="progress-bar progress-bar-animated"
+                                        role="progressbar" style="width: 0%;"></div>
+                                </div>
+                                <div id="fileUploadUploadStatus"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" id="fileUploadButton">Upload</button>
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- File update Modal End -->
+
+    </main>
+
+    <script src="js/s.js"></script>
+    <!-- <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/chartist.min.js"></script>
+    <script src="js/sha256.js"></script> -->
+
+    <script>
+        var eventsSource = new EventSource('/events');
+        var informationUpdateRefreshInterval;
+        var homekitUpdateRefreshInterval;
+        var uploadAjax = null;
+        var sensorsData = null;
+        var sensorChart = null;
+
+        function updateHostName() {
+            $.ajax({
+                type: "GET",
+                url: "/api/config/get",
+                async: true,
+                dataType: "json",
+                success: function (data) {
+                    var hostName = data['hostname'];
+                    if (!(hostName === "")) {
+                        $('#navHostName').html(hostName);
+                    }
+                }
+            });
+        }
+
+        function create_sensor_value_str(value) {
+            if (value != null && !isNaN(value)) {
+                return String(Math.round(value * 100) / 100);
+            } else {
+                return "-";
+            }
+        }
+
+        function createSensorTable() {
+            var tableBody = document.getElementById("sensors-table-body");
+
+            // Reset the table
+            tableBody.innerHTML = "";
+
+            // insert the data
+            for (let [id, value] of sensorsData) {
+
+                var valueStr = "<span class='level" + value.level + "'><span id='sensor" + id + "'>" +
+                    create_sensor_value_str(value.value) + "</span>&nbsp;" + value.unit + "</span>";
+                var row = $('<tr/>');
+                row.append($('<td/>').text(value.type));
+                row.append($('<td/>').html(valueStr));
+                $(tableBody).append(row);
+            }
+        }
+
+        function createChart() {
+            $("#sensorHistorySelect option").remove();
+
+            for (let [id, value] of sensorsData) {
+                $('#sensorHistorySelect').append('<option value="' + id + '">' + value.type + '&nbsp;(' + value.unit + ')</option>');
+            }
+            $("#sensorHistorySelect").attr('disabled', false);
+
+            sensorChart = new Chartist.LineChart('#sensorchart', { labels: [], series: [[]] }, {});
+        }
+
+        function updateChart() {
+            var selectedSensor = $("#sensorHistorySelect").val();
+
+            $.ajax({
+                type: "GET",
+                url: "/api/sensor/history/get?id=" + selectedSensor,
+                dataType: "json",
+                success: function (data) {
+                    updateChartSeries(data);
+                }
+            });
+        }
+
+        function secondsToTimestring(seconds) {
+            if (seconds <= 1) {
+                return "now";
+            }
+            else if (seconds < 60) {
+                return `${seconds} secs ago`;
+            }
+            else if (seconds < 60 * 60) {
+                var unit = Math.round(seconds / 60.0);
+                var plural = unit > 1 ? "s" : "";
+                return `${unit} min${plural} ago`;
+            }
+            else if (seconds < 60 * 60 * 24) {
+                var unit = Math.round(seconds / (60.0 * 60.0));
+                var plural = unit > 1 ? "s" : "";
+                return `${unit} hr${plural} ago`;
+            }
+            else {
+                var unit = Math.round(seconds / (60.0 * 60.0 * 24));
+                var plural = unit > 1 ? "s" : "";
+                return `${unit} day${plural} ago`;
+            }
+        }
+
+        function updateChartSeries(sensorHistory) {         
+            var series = sensorHistory.history;
+            var count = Math.max(Math.floor(series.length / 4), 1);
+
+            sensorChart.update({ labels: [], series: [series] }, {
+                fullWidth: true,
+                showPoint: series.length == 1,
+                showArea: true,
+                height: 285,
+                high: Math.ceil(sensorHistory.stats.max),
+                low: Math.floor(sensorHistory.stats.min),
+                divisor: Math.max(Math.ceil(sensorHistory.stats.max - sensorHistory.stats.min) / 4, 1),
+                axisY: {
+                    onlyInteger: true,
+                    offset: 30
+                },
+                axisX: {
+                    offset: 40,
+                    labelInterpolationFnc: function (value, index) {
+                        var reverseIndex = (series.length - index);
+                        return reverseIndex % count === 0 ? secondsToTimestring(60 * reverseIndex) : null;
+                    }
+                },
+                lineSmooth: Chartist.Interpolation.monotoneCubic(),
+            });
+        }
+
+        function updateSensorValue(e) {
+            var data = e.data;
+            if (data != null) {
+                var sensorData = JSON.parse(data);
+
+                var id = sensorData.id;
+                var value = sensorData.value;
+
+                $('#sensor' + id).text(create_sensor_value_str(value));
+                if (sensorsData) {
+                    sensorsData.get(id).value = value;
+                }
+            }
+        }
+
+        function updateInformation() {
+            $.ajax({
+                type: "GET",
+                url: "/api/information/get",
+                dataType: "json",
+                success: function (data) {
+                    $("#informationTable tr").remove();
+                    var table = $('#informationTable');
+
+                    for (var i = 0; i < data.length; i++) {
+                        table.append("<tr><td>" + data[i].key + "</td><td>" + data[i].value + "</td></tr>");
+                    }
+
+                    $('#informationModal').modal('handleUpdate');
+                }
+            });
+        }
+
+        function showConfirmModal(actionName, url) {
+            $('#confirmAction').text(actionName);
+            $('#confirmActionForm').attr('action', url);
+            $('#confirmActionStatus').hide();
+            $('#confirmActionModal').modal('show');
+        };
+
+        function showUploadFileModal(url, title, selectFileMessage) {
+            $('#fileUploadUploadForm').attr('action', url);
+            $("#fileUploadFileUploadId").val('');
+            $('#fileUploadUpdateModalLabel').text(title);
+            $('#selectFileMessageId').text(selectFileMessage);
+            $("#fileUploadUploadStatusWrapper").hide();
+            $('#fileUploadButton').show();
+            $('#fileUploadUpdateModal').modal('show');
+        }
+
+        function calculateSHA256(file) {
+            return new Promise((resolve, reject) => {
+                const fileReader = new FileReader();
+                fileReader.onload = () => {
+                    const hashObj = new jsSHA('SHA-256', 'ARRAYBUFFER');
+                    hashObj.update(fileReader.result);
+                    const hash = hashObj.getHash('HEX');
+                    resolve(hash);
+                };
+                fileReader.onerror = () => {
+                    reject(new Error('Error reading the file'));
+                };
+                fileReader.readAsArrayBuffer(file);
+            });
+        }
+
+        function uploadFile(form, file) {
+            calculateSHA256(file).then(hash => {
+                console.log(hash); // SHA256 hash of file
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    var fileData = reader.result;
+                    uploadAjax = $.ajax({
+                        xhr: function () {
+                            var xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener("progress", function (evt) {
+                                if (evt.lengthComputable) {
+                                    var percentComplete = ((evt.loaded / evt.total) * 100).toFixed();
+                                    $("#fileUploadUploadProgressBar").width(percentComplete + '%');
+                                    $("#fileUploadUploadProgressBar").html('<span class="text-center">' + percentComplete + '%</span>');
+                                }
+                            }, false);
+                            return xhr;
+                        },
+                        type: 'POST',
+                        url: form.attr('action'),
+                        data: fileData,
+                        processData: false,
+                        contentType: 'application/octet-stream',
+                        headers: { "sha256": hash },
+                        beforeSend: function () {
+                            $("#fileUploadUploadProgressBar").width('0%');
+                            $('#fileUploadUploadStatus').html('');
+                            $("#fileUploadUploadStatusWrapper").show();
+                            $('#fileUploadButton').hide();
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            if (jqXHR.status == 500) {
+                                $('#fileUploadUploadStatus').html('<div class="alert alert-danger" role="alert" id="fileUploadUploadError"></div>');
+                                $('#fileUploadUploadError').text(jqXHR.responseText);
+                            } else {
+                                $('#fileUploadUploadStatus').html('<div class="alert alert-danger" role="alert">File upload failed, please try again.</div>');
+                            }
+                            $('#fileUploadButton').show();
+                        },
+                        success: function (resp) {
+                            $('#fileUploadUpdateModal').modal('hide');
+                            $('#redirectingModal').modal('show');
+                            setTimeout(function () { $('#confirmActionModalRedirecting').trigger('click'); }, 7000);
+                        }
+                    });
+                };
+
+                reader.readAsArrayBuffer(file);
+            }).catch(
+                error => {
+                    console.error(error);
+                    $('#fileUploadUploadStatus').html('<div class="alert alert-danger" role="alert" id="fileUploadUploadError"></div>');
+                    $('#fileUploadUploadError').text(error);
+                });
+        }
+
+        function updateHomeKit() {
+            $.ajax({
+                type: "GET",
+                url: "/api/homekit/get",
+                dataType: "json",
+                success: function (data) {
+                    $("#homekitTable tr").remove();
+                    var table = $('#homekitTable');
+
+                    for (var i = 0; i < data.length; i++) {
+                        table.append("<tr><td>" + data[i].key + "</td><td>" + data[i].value + "</td></tr>");
+                    }
+
+                    $('#homekitModal').modal('handleUpdate');
+                }
+            });
+        }
+
+        function updateSensors() {
+            $.ajax({
+                type: "GET",
+                url: "/api/sensor/get",
+                dataType: "json",
+                success: function (data) {
+                    // console.log(data);
+                    sensorsData = new Map(data.map(sensor => [sensor["id"], sensor]));
+                    createSensorTable();
+                    createChart();
+                    updateChart();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            // Login Password toggle
+            $('#webPasswordToggle').change(function () {
+                let input = $('#webPassword');
+                if (input.attr('type') == 'password') {
+                    input.attr('type', 'text');
+                } else {
+                    input.attr('type', 'password');
+                }
+            });
+
+            document.getElementById('websiteLoginModal').addEventListener('show.bs.modal', (e) => {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/config/get",
+                    dataType: "json",
+                    success: function (data) {
+                        $('#webUserName').val(data["webusername"]);
+                    },
+                    error: function () {
+                        $('#webUserName').val('');
+                        console.warn('Failed to update');
+                    }
+                });
+            });
+
+            document.getElementById('otherSettingsModal').addEventListener('show.bs.modal', (e) => {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/config/get",
+                    dataType: "json",
+                    success: function (data) {
+                        $('#hostName').val(data["hostname"]);
+                    },
+                    error: function () {
+                        console.warn('Failed to update');
+                    }
+                });
+            });
+
+            document.getElementById('informationModal').addEventListener('show.bs.modal', (e) => {
+                updateInformation();
+                informationUpdateRefreshInterval = setInterval(updateInformation, 10000);
+            });
+
+            document.getElementById('informationModal').addEventListener('hide.bs.modal', (e) => {
+                clearInterval(informationUpdateRefreshInterval);
+            });
+
+            document.getElementById('fileUploadUpdateModal').addEventListener('hide.bs.modal', (e) => {
+                if (uploadAjax) {
+                    uploadAjax.abort();
+                    uploadAjax = null;
+                    console.log("Cancelled upload");
+                }
+            });
+
+            document.getElementById('restartDeviceButtonId').addEventListener('click', function () {
+                showConfirmModal('restart', '/restart.handler');
+            });
+
+            document.getElementById('factoryResetButtonId').addEventListener('click', function () {
+                showConfirmModal('factory reset', '/factory.reset.handler');
+            });
+
+            document.getElementById('firmwareUploadButtonId').addEventListener('click', function () {
+                showUploadFileModal('/firmware.update.handler',
+                    'Firmware upgrade',
+                    'Select firmware file for upload and upgrade');
+            });
+
+            document.getElementById('homekitModal').addEventListener('show.bs.modal', (e) => {
+                updateHomeKit();
+                homekitUpdateRefreshInterval = setInterval(updateHomeKit, 5000);
+            });
+
+            document.getElementById('homekitModal').addEventListener('hide.bs.modal', (e) => {
+                clearInterval(homekitUpdateRefreshInterval);
+            });
+
+            document.getElementById('forgetHomeKitPairingButtonId').addEventListener('click', function () {
+                showConfirmModal('forget homekit pairing', '/homekit.reset.handler');
+            });
+
+            document.getElementById('reenableHomeKitPairingButtonId').addEventListener('click', function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/homekit/enablepairing"
+                });
+            });
+
+            document.getElementById('sensorHistorySelect').addEventListener('change', function (event) {
+                updateChart();
+            });
+
+            $("#confirmActionForm").on('submit', function (e) {
+                e.preventDefault();
+                var form = $('#confirmActionForm');
+
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    beforeSend: function () {
+                        $('#confirmActionStatus').hide();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status == 500) {
+                            $('#confirmActionStatus').text(jqXHR.responseText);
+                        } else {
+                            $('#confirmActionStatus').text('Operation failed');
+                        }
+                        $('#confirmActionStatus').show();
+                    },
+                    success: function (resp) {
+                        $('#confirmActionModal').modal('hide');
+                        $('#redirectingModal').modal('show');
+                        setTimeout(function () {
+                            $('#confirmActionModalRedirecting').trigger('click');
+                        }, 5000);
+                    }
+                });
+            });
+
+            $("#fileUploadUploadForm").on('submit', function (e) {
+                e.preventDefault();
+                var form = $('#fileUploadUploadForm');
+                var file = $('#fileUploadFileUploadId')[0].files[0];
+                uploadFile(form, file);
+            });
+
+            //focus
+            $('#websiteLoginModal').on('shown.bs.modal', function () {
+                $("#webUserName").focus();
+            });
+
+            $('#otherSettingsModal').on('shown.bs.modal', function () {
+                $("#hostName").focus();
+            });
+
+            $('#fileUploadUpdateModal').on('shown.bs.modal', function () {
+                $("#fileUploadFileUploadId").focus();
+            });
+
+            updateSensors();
+            //createSensorTable();
+            //createChart();
+            //updateChart(data2);
+            eventsSource.addEventListener("sensor", updateSensorValue);
+            updateHostName();
+            setInterval(updateChart, 60 * 1000);
+        });
+
+    </script>
+</body>
+
+</html>
