@@ -6,8 +6,7 @@ set(SDKCONFIG_DEFAULTS "sdkconfig.defaults")
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
 #LVGL custom config file setup
-idf_build_set_property(COMPILE_OPTIONS "-DLV_CONF_INCLUDE_SIMPLE=1" APPEND)
-idf_build_set_property(COMPILE_OPTIONS "-I../main" APPEND)
+idf_build_set_property(COMPILE_OPTIONS "-DLV_LVGL_H_INCLUDE_SIMPLE" APPEND)
 
 set(ESP_IDF_LIB_PATH ${CMAKE_CURRENT_LIST_DIR}/components/extra/esp-idf-lib/components)
 set(HOMEKIT_LIB_PATH ${CMAKE_CURRENT_LIST_DIR}/components/extra/esp-homekit-sdk/components/homekit)
@@ -19,16 +18,18 @@ set(EXTRA_COMPONENT_DIRS ${ESP_IDF_LIB_PATH}/esp_idf_lib_helpers
                          ${ESP_IDF_LIB_PATH}/scd4x
                          ${HOMEKIT_LIB_PATH}/esp_hap_apple_profiles
                          ${HOMEKIT_LIB_PATH}/esp_hap_platform
-                         ${HOMEKIT_LIB_PATH}/json_parser
-                         ${HOMEKIT_LIB_PATH}/json_generator
                          ${HOMEKIT_LIB_PATH}/mu_srp
                          ${HOMEKIT_LIB_PATH}/hkdf-sha
                          ${HOMEKIT_LIB_PATH}/esp_hap_core)
 
-project(air_quality_sensor)
+project(bathroom_sensor)
 
 # Enable colors for compile output
 idf_build_set_property(COMPILE_OPTIONS "-fdiagnostics-color=always" APPEND)
+
+# Supress the earning in LVGL, remove later if not needed
+idf_component_get_property(lvgl_lib lvgl__lvgl COMPONENT_LIB)
+target_compile_options(${lvgl_lib} PRIVATE -Wno-error=implicit-function-declaration)
 
 message(STATUS "--------------Compile Info------------")
 message(STATUS "IDF_PATH = ${IDF_PATH}")

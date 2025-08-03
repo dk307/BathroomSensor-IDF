@@ -29,17 +29,14 @@ class display final : public esp32::singleton<display>
     esp32::task lvgl_task_;
     ui_interface &ui_interface_;
 
-    lv_disp_draw_buf_t draw_buf_{};
-    lv_disp_drv_t disp_drv_{};
-    lv_indev_drv_t indev_drv_{};
-    lv_disp_t *lv_display_{};
+    lv_display_t *lv_display_{};
     lv_color_t *disp_draw_buf_{};
     lv_color_t *disp_draw_buf2_{};
     ui ui_instance_;
     esp32::default_event_subscriber instance_app_common_event_{
         APP_COMMON_EVENT, ESP_EVENT_ANY_ID, [this](esp_event_base_t base, int32_t event, void *data) { app_event_handler(base, event, data); }};
 
-    static void IRAM_ATTR display_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p);
+    static void IRAM_ATTR display_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map);
     void gui_task();
     void app_event_handler(esp_event_base_t, int32_t, void *);
 
@@ -53,6 +50,8 @@ class display final : public esp32::singleton<display>
     void button_double_click();
     void button_long_press_up();
     void button_long_press_hold();
+
+    static uint32_t IRAM_ATTR lvgl_tick_callback();
 
     constexpr static uint32_t task_notify_wifi_changed_bit = BIT(total_sensors + 1);
     constexpr static uint32_t set_main_screen_changed_bit = BIT(total_sensors + 2);

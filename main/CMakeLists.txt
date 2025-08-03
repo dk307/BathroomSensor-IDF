@@ -3,10 +3,6 @@ idf_component_register(SRCS "main.cpp"
                             "hardware/display/display.cpp" 
                             "hardware/hardware.cpp" 
                             "hardware/sensors/sht3x_sensor_device.cpp" 
-                            "hardware/sensors/ld2540/uart.cpp"
-                            "hardware/sensors/ld2540/ld2450.cpp"
-                            "hardware/sensors/ld2540/target.cpp"
-                            "hardware/sensors/ld2540/zone.cpp"
                             "ui/ui2.cpp"
                             "ui/ui_interface.cpp"
                             "ui/ui_screen.cpp"
@@ -43,7 +39,7 @@ idf_component_register(SRCS "main.cpp"
 
                     INCLUDE_DIRS "."
                     REQUIRES fatfs spi_flash LovyanGFX lvgl mbedtls esp_wifi 
-                             esp_hw_support app_update esp_http_server esp-tls espcoredump
+                             esp_hw_support app_update esp_http_server esp-tls espcoredump esp_timer
                              esp_idf_lib_helpers i2cdev sht3x button
                              esp_hap_core esp_hap_apple_profiles json_generator)
 

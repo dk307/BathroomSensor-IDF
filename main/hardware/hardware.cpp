@@ -87,9 +87,6 @@ void hardware::sensor_task_ftn()
         sht3x_sensor1_.init(I2C_NUM_0, GPIO_NUM_42, GPIO_NUM_2);
         sht3x_sensor2_.init(I2C_NUM_1, GPIO_NUM_38, GPIO_NUM_39);
 
-        const uart_init_config ld2450_init_config{UART_NUM_0, GPIO_NUM_47, GPIO_NUM_21, 4 * 1024, 256000};
-        ld2450_.init(ld2450_init_config);
-
         // Wait until all sensors are ready
         vTaskDelay(initial_delay);
 

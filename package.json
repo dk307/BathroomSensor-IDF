@@ -1,6 +1,6 @@
 {
-  "name": "esp8266-filesystem-builder",
-  "description": "Gulp based build system for ESP8266 file system files",
+  "name": "esp32-lvgl-web-builder",
+  "description": "Gulp based build system for generating code for lvgl & web",
   "main": "gulpfile.js",
   "devDependencies": {
     "browser-sync": "^2.27.9",
@@ -27,7 +27,7 @@
     "gulp-imagemin": "^7.1.0",
     "gulp-run": "^1.7.1",
     "image-size": "^1.0.2",
-    "lv_font_conv": "^1.5.2",
+    "lv_font_conv": "^1.5.3",
     "lv_img_conv": "^0.4.0",
     "sha.js": "^2.4.11",
     "typescript": "^5.0.2"

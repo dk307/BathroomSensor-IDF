@@ -9,23 +9,51 @@
 #include "util/default_event.h"
 #include "util/exceptions.h"
 #include "wifi/wifi_manager.h"
+#include <button_gpio.h>
+#include <esp_heap_caps.h>
 #include <esp_log.h>
 #include <lvgl.h>
 
-const int LV_TICK_PERIOD_MS = 1;
+void lv_mem_init(void)
+{
+}
+void lv_mem_deinit(void)
+{
+}
+
+void *lv_malloc_core(size_t size)
+{
+    return heap_caps_malloc(size, MALLOC_CAP_8BIT | MALLOC_CAP_SPIRAM );
+}
+
+void *lv_realloc_core(void *p, size_t new_size)
+{
+    return heap_caps_realloc(p, new_size,  MALLOC_CAP_8BIT | MALLOC_CAP_SPIRAM );
+}
+
+void lv_free_core(void *p)
+{
+    heap_caps_free(p);
+}
 
 /* Display flushing */
-void display::display_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
+void display::display_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map)
 {
-    auto display_device_ = reinterpret_cast<LGFX *>(disp->user_data);
+    auto display_device_ = reinterpret_cast<LGFX *>(lv_display_get_user_data(disp));
     if (display_device_->getStartCount() == 0)
     {
         display_device_->endWrite();
     }
 
-    display_device_->pushImageDMA(area->x1, area->y1, area->x2 - area->x1 + 1, area->y2 - area->y1 + 1, (lgfx::swap565_t *)&color_p->full);
+    lv_draw_sw_rgb565_swap(px_map, (area->x2 - area->x1 + 1) * (area->y2 - area->y1 + 1));
+    display_device_->pushImageDMA(area->x1, area->y1, area->x2 - area->x1 + 1, area->y2 - area->y1 + 1, (lgfx::swap565_t *)px_map);
 
     lv_disp_flush_ready(disp); /* tell lvgl that flushing is done */
+}
+
+uint32_t display::lvgl_tick_callback()
+{
+    return esp_timer_get_time() / 1000; /* Get the current time in milliseconds */
 }
 
 void display::begin()
@@ -35,6 +63,7 @@ void display::begin()
     instance_app_common_event_.subscribe();
 
     lv_init();
+    lv_tick_set_cb(lvgl_tick_callback);
 
     if (!display_device_.init())
     {
@@ -52,8 +81,9 @@ void display::begin()
 
     ESP_LOGI(DISPLAY_TAG, "LV initialized");
     const int buffer_size = 80;
+    constexpr auto bytesPerPixel = (LV_COLOR_FORMAT_GET_SIZE(LV_COLOR_FORMAT_RGB565));
 
-    const auto display_buffer_size = screenWidth * buffer_size * sizeof(lv_color_t);
+    const auto display_buffer_size = screenWidth * buffer_size * bytesPerPixel;
     ESP_LOGI(DISPLAY_TAG, "Display buffer size:%ld", display_buffer_size);
     disp_draw_buf_ = (lv_color_t *)heap_caps_malloc(display_buffer_size, MALLOC_CAP_DMA);
     disp_draw_buf2_ = (lv_color_t *)heap_caps_malloc(display_buffer_size, MALLOC_CAP_DMA);
@@ -63,18 +93,10 @@ void display::begin()
         CHECK_THROW_ESP2(ESP_ERR_NO_MEM, "Failed to allocate lvgl display buffer");
     }
 
-    lv_disp_draw_buf_init(&draw_buf_, disp_draw_buf_, disp_draw_buf2_, screenWidth * buffer_size);
-
-    ESP_LOGD(DISPLAY_TAG, "LVGL display buffer initialized");
-
-    /*** LVGL : Setup & Initialize the display device driver ***/
-    lv_disp_drv_init(&disp_drv_);
-    disp_drv_.hor_res = display_device_.width();
-    disp_drv_.ver_res = display_device_.height();
-    disp_drv_.flush_cb = display_flush;
-    disp_drv_.draw_buf = &draw_buf_;
-    disp_drv_.user_data = &display_device_;
-    lv_display_ = lv_disp_drv_register(&disp_drv_);
+    lv_display_ = lv_display_create(screenWidth, screenHeight);
+    lv_display_set_flush_cb(lv_display_, display_flush);
+    lv_display_set_user_data(lv_display_, &display_device_);
+    lv_display_set_buffers(lv_display_, disp_draw_buf_, disp_draw_buf2_, display_buffer_size, LV_DISPLAY_RENDER_MODE_PARTIAL);
 
     ESP_LOGD(DISPLAY_TAG, "LVGL display initialized");
 
@@ -82,20 +104,22 @@ void display::begin()
 
     ESP_LOGI(DISPLAY_TAG, "Display setup done");
 
-    button_config_t gpio_btn_cfg{};
+    // Initialize the button
+    ESP_LOGI(DISPLAY_TAG, "Initializing button");
+    button_config_t btn_cfg = {};
+    button_gpio_config_t gpio_btn_cfg{};
 
-    gpio_btn_cfg.type = BUTTON_TYPE_GPIO;
-    gpio_btn_cfg.long_press_time = CONFIG_BUTTON_LONG_PRESS_TIME_MS;
-    gpio_btn_cfg.short_press_time = CONFIG_BUTTON_SHORT_PRESS_TIME_MS;
-    gpio_btn_cfg.gpio_button_config.gpio_num = 46;
-    gpio_btn_cfg.gpio_button_config.active_level = 0;
-    gpio_btn_cfg.gpio_button_config.enable_power_save = true;
-    button_ = iot_button_create(&gpio_btn_cfg);
+    btn_cfg.long_press_time = CONFIG_BUTTON_LONG_PRESS_TIME_MS;
+    btn_cfg.short_press_time = CONFIG_BUTTON_SHORT_PRESS_TIME_MS;
+    gpio_btn_cfg.gpio_num = 46;
+    gpio_btn_cfg.active_level = 0;
+    gpio_btn_cfg.enable_power_save = true;
+    CHECK_THROW_ESP(iot_button_new_gpio_device(&btn_cfg, &gpio_btn_cfg, &button_));
 
-    CHECK_THROW_ESP(iot_button_register_cb(button_, BUTTON_SINGLE_CLICK, button_event_callback<&display::button_click>, this));
-    CHECK_THROW_ESP(iot_button_register_cb(button_, BUTTON_DOUBLE_CLICK, button_event_callback<&display::button_double_click>, this));
-    CHECK_THROW_ESP(iot_button_register_cb(button_, BUTTON_LONG_PRESS_UP, button_event_callback<&display::button_long_press_up>, this));
-    CHECK_THROW_ESP(iot_button_register_cb(button_, BUTTON_LONG_PRESS_HOLD, button_event_callback<&display::button_long_press_hold>, this));
+    CHECK_THROW_ESP(iot_button_register_cb(button_, BUTTON_SINGLE_CLICK, nullptr, button_event_callback<&display::button_click>, this));
+    CHECK_THROW_ESP(iot_button_register_cb(button_, BUTTON_DOUBLE_CLICK, nullptr, button_event_callback<&display::button_double_click>, this));
+    CHECK_THROW_ESP(iot_button_register_cb(button_, BUTTON_LONG_PRESS_UP, nullptr, button_event_callback<&display::button_long_press_up>, this));
+    CHECK_THROW_ESP(iot_button_register_cb(button_, BUTTON_LONG_PRESS_HOLD, nullptr, button_event_callback<&display::button_long_press_hold>, this));
 }
 
 void display::button_click()
@@ -116,25 +140,25 @@ void display::button_long_press_up()
 
     if (time >= ui_launcher_screen::factory_reset_long_press_time)
     {
-        ESP_LOGI(DISPLAY_TAG, "Button long press up after %u ms for Factory Reset", time);
+        ESP_LOGI(DISPLAY_TAG, "Button long press up after %lu ms for Factory Reset", time);
         // Factory Reset
         operations::instance.factory_reset();
     }
     else if (time >= ui_launcher_screen::wifi_enroll_long_press_time)
     {
-        ESP_LOGI(DISPLAY_TAG, "Button long press up after %u ms for Wifi Enroll", time);
+        ESP_LOGI(DISPLAY_TAG, "Button long press up after %lu ms for Wifi Enroll", time);
         // Wifi Enroll
         xTaskNotify(lvgl_task_.handle(), set_wifi_enroll_screen_changed_bit, eSetBits);
     }
     else if (time >= ui_launcher_screen::info_long_press_time)
     {
-        ESP_LOGI(DISPLAY_TAG, "Button long press up after %u ms for Info", time);
+        ESP_LOGI(DISPLAY_TAG, "Button long press up after %lu ms for Info", time);
         // Info Screen
         xTaskNotify(lvgl_task_.handle(), set_info_screen_changed_bit, eSetBits);
     }
     else
     {
-        ESP_LOGI(DISPLAY_TAG, "Button long press up after %u ms with no action", time);
+        ESP_LOGI(DISPLAY_TAG, "Button long press up after %lu ms with no action", time);
     }
 
     xTaskNotify(lvgl_task_.handle(), set_update_button_timer_changed_bit, eSetBits);
@@ -143,7 +167,7 @@ void display::button_long_press_up()
 void display::button_long_press_hold()
 {
     const auto time = iot_button_get_ticks_time(button_);
-    ESP_LOGD(DISPLAY_TAG, "Button long press %u ms", time);
+    ESP_LOGD(DISPLAY_TAG, "Button long press %lu ms", time);
     xTaskNotify(lvgl_task_.handle(), set_update_button_timer_changed_bit, eSetBits);
 }
 

@@ -41,7 +41,7 @@ void ui_main_screen::set_sensor_value(sensor_id_index index, float value)
         } 
         else
         {
-            lv_label_set_text_fmt(humidity_label, "%g", value);
+            lv_label_set_text_fmt(humidity_label, "%lu", static_cast<unsigned long>(std::round(value)));
         }
     }
 }

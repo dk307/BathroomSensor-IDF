@@ -1,7 +1,6 @@
 #pragma once
 
 #include "hardware/inbuild_led.h"
-#include "hardware/sensors/ld2540/ld2450.h"
 #include "hardware/sensors/sensor.h"
 #include "hardware/sensors/sht3x_sensor_device.h"
 #include "ui/ui_interface.h"
@@ -56,8 +55,6 @@ class hardware final : public esp32::singleton<hardware>
     uint64_t sht3x_sensor_last_read2_ = 0;
 
     inbuild_led led_;
-
-    LD2450 ld2450_;
 
     void set_sensor_value(sensor_id_index index, float value);
 

@@ -60,5 +60,4 @@ class ui final : public ui_inter_screen_interface, esp32::noncopyable
     void init_top_message();
     static void no_wifi_img_animation_cb(void *var, int32_t v);
     static void top_message_timer_cb(lv_timer_t *e);
-    static lv_font_t *lv_font_from_sd_card(const char *path);
 };

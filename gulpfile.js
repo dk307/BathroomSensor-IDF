@@ -90,9 +90,9 @@ var toImageFile = function(name, debug) {
 
     output += '\n};\n\n';
     output += 'const lv_img_dsc_t ' + safename + '_img = {\n';
-    output += '  .header.always_zero = 0,\n';
-    output += '  .header.reserved = 0,\n';
-    output += '  .header.cf = LV_IMG_CF_RAW_ALPHA,\n';
+    output += '  .header.magic = LV_IMAGE_HEADER_MAGIC,\n';
+    output += '  .header.reserved_2 = 0,\n';
+    output += '  .header.cf = LV_COLOR_FORMAT_RAW_ALPHA,\n';
     output += '  .header.w = ' + dimensions.width + ',\n';
     output += '  .header.h = ' + dimensions.height + ',\n';
     output += '  .data_size = ' + source.contents.length + ',\n';
@@ -179,7 +179,7 @@ gulp.task('web-images', function() {
 // display fonts start
 function font_create(bpp, size, font, output, symbols_and_range) {
   return grun(
-             'node ./node_modules/lv_font_conv/lv_font_conv.js --bpp ' + bpp +
+             'node ./node_modules/lv_font_conv/lv_font_conv.js  --no-compress --bpp ' + bpp +
              ' --size ' + size + ' --force-fast-kern-format --font ' + font +
              ' ' + symbols_and_range + ' --format lvgl  -o ' +
              staticDisplaySrc + '/' + output)

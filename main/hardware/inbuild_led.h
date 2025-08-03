@@ -1,6 +1,6 @@
 #pragma once
 
-#include "led_strip.h"
+#include <led_strip.h>
 #include "util/exceptions.h"
 
 class inbuild_led
@@ -11,7 +11,7 @@ class inbuild_led
         led_strip_config_t strip_config{};
         strip_config.strip_gpio_num = GPIO_NUM_48;
         strip_config.max_leds = 1;
-        strip_config.led_pixel_format = LED_PIXEL_FORMAT_GRB;
+        strip_config.color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_GRB;
         strip_config.led_model = LED_MODEL_WS2812;
         strip_config.flags.invert_out = false;
 

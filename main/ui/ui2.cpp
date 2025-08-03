@@ -7,34 +7,26 @@
 
 lv_img_dsc_t logo_img;
 
-void lv_logger(const char *dsc)
+#if LV_USE_LOG
+void lv_logger(lv_log_level_t level, const char *buf)
 {
-    ESP_LOGI(UI_TAG, "%s", dsc);
-}
-
-lv_font_t *ui::lv_font_from_sd_card(const char *path)
-{
-    auto font = lv_font_load(path);
-
-    if (!font)
+    switch (level)
     {
-        lv_fs_file_t file;
-        lv_fs_res_t res = lv_fs_open(&file, path, LV_FS_MODE_RD);
-        if (res != LV_FS_RES_OK)
-        {
-            ESP_LOGE(UI_TAG, "Failed to load file:%s with %d", path, res);
-            return NULL;
-        }
-
-        lv_fs_close(&file);
+    case LV_LOG_LEVEL_INFO:
+        ESP_LOGI(UI_TAG, "%s", buf);
+        break;
+    case LV_LOG_LEVEL_WARN:
+        ESP_LOGW(UI_TAG, "%s", buf);
+        break;
+    case LV_LOG_LEVEL_ERROR:
+        ESP_LOGE(UI_TAG, "%s", buf);
+        break;
+    default:
+        ESP_LOGI(UI_TAG, "Unknown log level %d: %s", level, buf);
+        break;
     }
-    else
-    {
-        ESP_LOGI(UI_TAG, "Loaded file:%s from sd card", path);
-    }
-
-    return font;
 }
+#endif
 
 void ui::no_wifi_img_animation_cb(void *var, int32_t v)
 {
@@ -65,7 +57,7 @@ void ui::load_boot_screen()
 void ui::init()
 {
     // dont't cache boot screen
-    lv_img_cache_invalidate_src(NULL);
+    lv_image_cache_drop(NULL);
 
     init_top_message();
     init_no_wifi_image();
@@ -114,7 +106,7 @@ void ui::init_no_wifi_image()
 
 void ui::top_message_timer_cb(lv_timer_t *e)
 {
-    auto p_this = reinterpret_cast<ui *>(e->user_data);
+    auto p_this = reinterpret_cast<ui *>(lv_timer_get_user_data(e));
     lv_obj_add_flag(p_this->top_message_panel_, LV_OBJ_FLAG_HIDDEN);
     lv_timer_pause(p_this->top_message_timer_);
 }
@@ -129,7 +121,9 @@ void ui::init_top_message()
     lv_obj_set_style_bg_opa(top_message_panel_, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(top_message_panel_, LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_color(top_message_panel_, lv_color_hex(0xF5F5F5), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_add_flag(top_message_panel_, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_EVENT_BUBBLE | LV_OBJ_FLAG_GESTURE_BUBBLE);
+    lv_obj_add_flag(top_message_panel_, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(top_message_panel_, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_obj_add_flag(top_message_panel_, LV_OBJ_FLAG_GESTURE_BUBBLE);
 
     top_message_label_ = lv_label_create(top_message_panel_);
     lv_obj_set_size(top_message_panel_, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
@@ -175,7 +169,7 @@ void ui::wifi_changed()
         {
             ESP_LOGI(UI_TAG, "Hiding No wifi icon");
             lv_obj_add_flag(no_wifi_image_, LV_OBJ_FLAG_HIDDEN);
-            lv_anim_timeline_stop(no_wifi_image_animation_timeline_);
+            lv_anim_timeline_pause(no_wifi_image_animation_timeline_);
         }
         else
         {

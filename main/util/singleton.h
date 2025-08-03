@@ -15,8 +15,8 @@ template <class T> class singleton
         return *instance;
     }
 
-    explicit singleton<T>(const singleton<T> &) = delete;
-    explicit singleton<T>(singleton<T> &&) = delete;
+    explicit singleton(const singleton<T> &) = delete;
+    explicit singleton(singleton<T> &&) = delete;
     const singleton<T> &operator=(const singleton<T> &) = delete;
 
   protected:

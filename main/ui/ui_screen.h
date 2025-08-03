@@ -35,7 +35,7 @@ class ui_screen : esp32::noncopyable
 
     template <class T, void (T::*ftn)(lv_timer_t *)> static void timer_callback(lv_timer_t *e)
     {
-        auto p_this = reinterpret_cast<T *>(e->user_data);
+        auto p_this = reinterpret_cast<T *>(lv_timer_get_user_data(e));
         (p_this->*ftn)(e);
     }
 
