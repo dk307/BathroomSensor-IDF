@@ -63,8 +63,6 @@ class web_server final : esp32::http_server, public esp32::singleton<web_server>
 
     static const char *get_content_type(const std::string &extension);
 
-    template <class Array, class K, class T> static void add_key_value_object(Array &array, const K &key, const T &value);
-
     static void log_and_send_error(const esp32::http_request &request, httpd_err_code_t code, const std::string &error);
     static void send_empty_200(const esp32::http_request &request);
     static std::string get_file_sha256(const char *filename);
@@ -84,7 +82,7 @@ class web_server final : esp32::http_server, public esp32::singleton<web_server>
 
     void send_table_response(esp32::http_request &request, ui_interface::information_type type);
 
-    void send_json_response(esp32::http_request &request, const BasicJsonDocument<esp32::psram::json_allocator> &document);
+    void send_json_response(esp32::http_request &request, const JsonDocument &document);
 
     esp32::event_source events;
     esp32::event_source logging;

@@ -248,11 +248,10 @@ using sensor_history = sensor_history_minute_t<12, 720>;
 
 constexpr std::array<sensor_definition_display, 0> no_level{};
 
-constexpr std::array<sensor_definition, total_sensors> sensor_definitions
-{
-        sensor_definition{"Humidity-1", "⁒", no_level.data(), no_level.size(), 0, 100, 1},
-        sensor_definition{"Humidity-2", "⁒", no_level.data(), no_level.size(), 0, 100, 1},
-        sensor_definition{"Humidity", "⁒", no_level.data(), no_level.size(), 0, 100, 1},
+constexpr std::array<sensor_definition, total_sensors> sensor_definitions{
+    sensor_definition{"Humidity-1", "⁒", no_level.data(), no_level.size(), 0, 100, 1},
+    sensor_definition{"Humidity-2", "⁒", no_level.data(), no_level.size(), 0, 100, 1},
+    sensor_definition{"Humidity", "⁒", no_level.data(), no_level.size(), 0, 100, 1},
 };
 
 constexpr auto &&get_sensor_definition(sensor_id_index id)

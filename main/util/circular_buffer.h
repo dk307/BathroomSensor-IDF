@@ -5,6 +5,7 @@
 #include <type_traits>
 
 template <typename T, size_t S> 
+    requires std::is_trivially_copyable_v<T>
 class circular_buffer
 {
   public:

@@ -47,7 +47,7 @@ void config::save()
 
 std::string config::get_all_config_as_json()
 {
-    BasicJsonDocument<esp32::psram::json_allocator> json_document(2048);
+    JsonDocument json_document {&ArduinoJson::SpiRamAllocator::instance()};
 
     json_document[(HostNameId)] = get_host_name();
     const auto web_cred = get_web_user_credentials();

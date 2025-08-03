@@ -140,13 +140,6 @@ bool web_server::check_authenticated(esp32::http_request &request)
     return true;
 }
 
-template <class Array, class K, class T> void web_server::add_key_value_object(Array &array, const K &key, const T &value)
-{
-    auto j1 = array.createNestedObject();
-    j1[("key")] = key;
-    j1[("value")] = value;
-}
-
 void web_server::handle_information_get(esp32::http_request &request)
 {
     ESP_LOGD(WEBSERVER_TAG, "/api/information/get");
@@ -166,7 +159,7 @@ void web_server::handle_sensor_get(esp32::http_request &request)
         return;
     }
 
-    BasicJsonDocument<esp32::psram::json_allocator> json_document(2048);
+    JsonDocument json_document{&ArduinoJson::SpiRamAllocator::instance()};
     JsonArray array = json_document.to<JsonArray>();
 
     for (auto i = 0; i < total_sensors; i++)
@@ -174,7 +167,7 @@ void web_server::handle_sensor_get(esp32::http_request &request)
         const auto id = static_cast<sensor_id_index>(i);
         const auto &sensor = ui_interface_.get_sensor(id);
         const auto value = sensor.get_value();
-        auto obj = array.createNestedObject();
+        auto obj = array.add<JsonObject>();
 
         auto &&definition = get_sensor_definition(id);
         obj["value"] = value;
@@ -209,9 +202,9 @@ void web_server::handle_sensor_stats(esp32::http_request &request)
     const auto id = static_cast<sensor_id_index>(id_arg_num.value());
     const auto &sensor_detail_info = ui_interface_.get_sensor_detail_info(id);
 
-    BasicJsonDocument<esp32::psram::json_allocator> json_document(8 * 1024);
+    JsonDocument json_document{&ArduinoJson::SpiRamAllocator::instance()};
 
-    auto stats_json = json_document.createNestedObject("stats");
+    auto stats_json = json_document["stats"].to<JsonObject>();
 
     if (sensor_detail_info.stat.has_value())
     {
@@ -483,7 +476,7 @@ void web_server::send_sensor_data(sensor_id_index id)
     const auto &sensor = ui_interface_.get_sensor(id);
     const auto value = sensor.get_value();
 
-    BasicJsonDocument<esp32::psram::json_allocator> json_document(128);
+    JsonDocument json_document{&ArduinoJson::SpiRamAllocator::instance()};
 
     auto &&definition = get_sensor_definition(id);
     json_document["value"] = value;
@@ -714,20 +707,22 @@ void web_server::handle_homekit_info_get(esp32::http_request &request)
 
 void web_server::send_table_response(esp32::http_request &request, ui_interface::information_type type)
 {
-    BasicJsonDocument<esp32::psram::json_allocator> json_document(2048);
+    JsonDocument json_document{&ArduinoJson::SpiRamAllocator::instance()};
     JsonArray arr = json_document.to<JsonArray>();
 
     const auto data = ui_interface_.get_information_table(type);
 
     for (auto &&[key, value] : data)
     {
-        add_key_value_object(arr, key, value);
+        auto j1 = arr.add<JsonObject>();
+        j1[("key")] = key;
+        j1[("value")] = value;
     }
 
     send_json_response(request, json_document);
 }
 
-void web_server::send_json_response(esp32::http_request &request, const BasicJsonDocument<esp32::psram::json_allocator> &json_document)
+void web_server::send_json_response(esp32::http_request &request, const JsonDocument &json_document)
 {
     if (json_document.overflowed())
     {
@@ -736,7 +731,6 @@ void web_server::send_json_response(esp32::http_request &request, const BasicJso
     }
 
     esp32::psram::string json;
-    json.reserve(json_document.memoryUsage() * 2);
     serializeJson(json_document, json);
     esp32::array_response::send_response(request, json, js_media_type);
 }
