@@ -73,6 +73,7 @@ void display::begin()
     display_device_.setRotation(1);
     display_device_.initDMA();
     display_device_.startWrite();
+    display_device_.setBrightness(255);
 
     const auto screenWidth = display_device_.width();
     const auto screenHeight = display_device_.height();
