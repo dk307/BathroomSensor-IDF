@@ -105,7 +105,8 @@ void hardware::sensor_task_ftn()
     {
         ESP_LOGE(OPERATIONS_TAG, "Hardware Task Failure:%s", ex.what());
         led_.set_color(255, 0, 0);
-        // throw;
+        vTaskDelay(pdMS_TO_TICKS(15000));
+        throw;
     }
 
     vTaskDelete(NULL);

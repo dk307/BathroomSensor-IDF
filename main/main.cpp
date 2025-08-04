@@ -56,7 +56,7 @@ extern "C" void app_main(void)
         wifi_manager.begin();
         hardware.begin();
         web_server.begin();
-        // homekit_integration.begin();
+        homekit_integration.begin();
 
         operations::mark_running_parition_as_valid();
 
@@ -68,6 +68,6 @@ extern "C" void app_main(void)
     {
         ESP_LOGI(OPERATIONS_TAG, "Init Failure:%s", ex.what());
         operations::try_mark_running_parition_as_invalid();
-        // throw;
+        throw;
     }
 }

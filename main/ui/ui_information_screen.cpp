@@ -49,6 +49,7 @@ lv_obj_t *ui_information_screen::create_table(lv_obj_t *tab)
 {
     auto table = lv_table_create(tab);
     lv_obj_set_size(table, lv_pct(100), screen_height - 80);
+    lv_obj_set_style_text_font(table, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_set_style_border_width(table, 0, LV_PART_MAIN);
     lv_obj_set_style_border_width(table, 0, LV_PART_ITEMS);

@@ -303,8 +303,15 @@ ui_interface::information_table_type ui_interface::get_information_table(informa
             }
         }
         const bool paired = homekit_integration_->is_paired();
-        table.push_back({"Homekit Paired", paired ? "Yes" : "No"});
-        table.push_back({"Mac Address", get_default_mac_address()});
+        if (!paired)
+        {
+            table.push_back({"Homekit Setup Code", homekit_integration_->get_password()});
+            table.push_back({"Homekit Setup Id", homekit_integration_->get_setup_id()});
+        }
+        else
+        {
+            table.push_back({"Homekit Clients Count", esp32::string::to_string(homekit_integration_->get_connection_count())});
+        }
         return table;
     }
     default:

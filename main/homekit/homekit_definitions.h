@@ -46,4 +46,4 @@ constexpr auto homekit_definitions = std::to_array<homekit_definition>({
                            HAP_CHAR_UNIT_PERCENTAGE},
 });
 
-constexpr std::string_view primary_service{HAP_SERV_UUID_AIR_QUALITY_SENSOR};
+constexpr std::string_view primary_service{HAP_SERV_UUID_HUMIDITY_SENSOR};
