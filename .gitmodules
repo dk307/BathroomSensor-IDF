@@ -4,3 +4,6 @@
 [submodule "components/extra/esp-homekit-sdk"]
 	path = components/extra/esp-homekit-sdk
 	url = git@github.com:dk307/esp-homekit-sdk.git
+[submodule "components/extra/rlottie"]
+	path = components/extra/rlottie
+	url = git@github.com:Samsung/rlottie.git
