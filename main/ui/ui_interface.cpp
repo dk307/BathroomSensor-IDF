@@ -30,6 +30,12 @@ sensor_history::sensor_history_snapshot ui_interface::get_sensor_detail_info(sen
     return hardware_->get_sensor_detail_info(index);
 }
 
+float ui_interface::get_sensor_slope_per_minute(uint8_t last_minutes_to_consider, sensor_id_index index)
+{
+    configASSERT(hardware_);
+    return hardware_->get_slope_per_minute(index, last_minutes_to_consider);
+}
+
 wifi_status ui_interface::get_wifi_status()
 {
     configASSERT(wifi_manager_);

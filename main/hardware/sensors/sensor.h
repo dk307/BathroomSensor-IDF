@@ -102,6 +102,25 @@ class sensor_definition
     const float value_step_;
 };
 
+/**
+ * @class sensor_value
+ * @brief Thread-safe wrapper for a floating-point sensor value.
+ *
+ * This class provides atomic access to a sensor value, allowing safe concurrent
+ * reads and writes. It supports setting the value, marking it as invalid (using NAN),
+ * and checking if the value has changed.
+ *
+ * Public Methods:
+ * - float get_value() const: Returns the current sensor value.
+ * - bool set_value(float value): Sets the sensor value and returns true if it changed.
+ * - bool set_invalid_value(): Sets the sensor value to NAN, marking it as invalid.
+ *
+ * Private Members:
+ * - std::atomic<float> value_: The atomic sensor value, initialized to NAN.
+ *
+ * Private Methods:
+ * - bool set_value_(float value): Helper to set the value atomically and indicate change.
+ */
 class sensor_value
 {
   public:
@@ -166,6 +185,9 @@ template <uint16_t countT> class sensor_history_t
         last_x_values_.clear();
     }
 
+    // Returns a snapshot of the last x values, grouped by `group_by_count`
+    // If no values are present, returns an empty vector
+    // If `group_by_count` is 0, returns all values
     sensor_history_snapshot get_snapshot(uint8_t group_by_count) const
     {
         vector_history_t return_values;
@@ -212,6 +234,8 @@ template <uint16_t countT> class sensor_history_t
         };
     }
 
+    // Returns the average of the last x values
+    // If no values are present, returns std::nullopt
     std::optional<float> get_average() const
     {
         std::lock_guard<esp32::semaphore> lock(data_mutex_);
@@ -231,6 +255,62 @@ template <uint16_t countT> class sensor_history_t
         }
     }
 
+  protected:
+    // Calculates the linear trend (slope)
+    // Returns a float representing the slope of the best-fit line.
+    // A positive slope means increasing trend, negative means decreasing.
+    float get_slope(size_t x) const
+    {
+        std::lock_guard<esp32::semaphore> lock(data_mutex_);
+
+        const auto n_total = last_x_values_.size();
+        if (n_total < 2 || x < 2)
+        {
+            return 0.0f;
+        }
+
+        const size_t n = std::min(x, n_total);
+        const size_t offset = n_total - n;
+
+        double sum_x = (n - 1) * n / 2.0;
+        double sum_x2 = (n - 1) * n * (2 * n - 1) / 6.0;
+
+        double sum_y = 0.0;
+        double sum_xy = 0.0;
+
+        float last_valid_value = 0.0f;
+        bool has_valid = false;
+
+        // Find first valid value
+        for (size_t i = 0; i < n; ++i)
+        {
+            float val = last_x_values_[offset + i];
+            if (!std::isnan(val))
+            {
+                last_valid_value = val;
+                has_valid = true;
+                break;
+            }
+        }
+
+        if (!has_valid)
+        {
+            return 0.0f;
+        }
+
+        for (size_t i = 0; i < n; ++i)
+        {
+            const float raw = last_x_values_[offset + i];
+            const float y = std::isnan(raw) ? last_valid_value : (last_valid_value = raw);
+
+            sum_y += y;
+            sum_xy += i * y;
+        }
+
+        double denominator = n * sum_x2 - sum_x * sum_x;
+        return (denominator == 0.0) ? 0.0f : static_cast<float>((n * sum_xy - sum_x * sum_y) / denominator);
+    }
+
   private:
     mutable esp32::semaphore data_mutex_;
     circular_buffer<float, countT> last_x_values_;
@@ -242,6 +322,12 @@ template <uint8_t reads_per_minuteT, uint16_t minutesT> class sensor_history_min
     static constexpr auto total_minutes = minutesT;
     static constexpr auto reads_per_minute = reads_per_minuteT;
     static constexpr auto sensor_interval = (60u * 1000 / reads_per_minute);
+
+    float get_slope_per_minute(uint8_t last_minutes_to_consider) const
+    {
+        const auto slope = sensor_history_t<reads_per_minuteT * minutesT>::get_slope(reads_per_minuteT * last_minutes_to_consider);
+        return (60u * slope) / sensor_interval;
+    }
 };
 
 using sensor_history = sensor_history_minute_t<12, 720>;

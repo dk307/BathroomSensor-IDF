@@ -29,6 +29,11 @@ class hardware final : public esp32::singleton<hardware>
         return (*sensors_history_)[static_cast<uint8_t>(index)];
     }
 
+    float get_slope_per_minute(sensor_id_index index, uint8_t last_minutes_to_consider) const
+    {
+        return sensors_history_->at(static_cast<uint8_t>(index)).get_slope_per_minute(last_minutes_to_consider);
+    }
+
   private:
     hardware(config &config, display &display) : config_(config), display_(display), sensor_refresh_task_([this] { sensor_task_ftn(); })
     {
