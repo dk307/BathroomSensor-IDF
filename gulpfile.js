@@ -114,6 +114,43 @@ var toImageFile = function(name, debug) {
   });
 };
 
+var toLottieFile = function(name, debug) {
+  return through.obj(function(source, encoding, callback) {
+    var parts = source.path.split(path.sep);
+    var filename = parts[parts.length - 1];
+    var safename = name || filename.split('.').join('_');
+
+    // Generate output
+    var output = '';
+    output += '#include <stdint.h>\n';
+    output += 'const uint8_t ' + safename + '_data[] = {';
+    for (var i = 0; i < source.contents.length; i++) {
+      if (i > 0) {
+        output += ',';
+      }
+      if (0 === (i % 30)) {
+        output += '\n';
+      }
+      output += '0x' + ('00' + source.contents[i].toString(16)).slice(-2);
+    }
+    output += '\n};\n';
+    output += 'const uint32_t ' + safename + '_size = ' + source.contents.length + ';\n';
+
+    // clone the contents
+    var destination = source.clone();
+    destination.path = source.path + '.c';
+    destination.contents = Buffer.from(output);
+
+    if (debug) {
+      console.info(
+          'Lottie ' + filename + ' \tsize: ' + source.contents.length +
+          ' bytes');
+    }
+
+    callback(null, destination);
+  });
+};
+
 
 gulp.task('html', function() {
   return gulp.src(baseFolder + 'web/*.html')
@@ -208,6 +245,12 @@ gulp.task('display-images', function() {
       .pipe(gulp.dest(staticDisplaySrc));
 });
 
+gulp.task('lottie', function() {
+  return gulp.src(baseFolder + 'display/lottie/*.json')
+      .pipe(toLottieFile(null, true))
+      .pipe(gulp.dest(staticDisplaySrc));
+});
+
 gulp.task('display-file-copy', function() {
   return gulp.src(baseFolder + 'display/font/*.*')
       .pipe(gulp.dest(sdcardFolder + '/display/font'));
@@ -217,7 +260,7 @@ gulp.task(
     'default',
     gulp.series(
         'html', 'js', 'js-extra', 'css', 'web-images', 'display-fonts',
-        'display-images', 'display-file-copy'));
+        'display-images', 'lottie', 'display-file-copy'));
 
 gulp.task('serve', function() {
   browserSync.init({server: {baseDir: baseWebFolder}});

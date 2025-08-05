@@ -21,10 +21,19 @@ void ui_main_screen::init()
     lv_obj_set_style_text_font(humidity_label, &big_panel_font, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_label_set_text_static(humidity_label, "-");
 
-    auto image = lv_img_create(screen_);
-    LV_IMG_DECLARE(humidity_png_img);
-    lv_img_set_src(image, &humidity_png_img);
-    lv_obj_align(image, LV_ALIGN_TOP_RIGHT, -5, 5);
+    // auto image = lv_img_create(screen_);
+    // LV_IMG_DECLARE(humidity_png_img);
+    // lv_img_set_src(image, &humidity_png_img);
+    // lv_obj_align(image, LV_ALIGN_TOP_RIGHT, -5, 5);
+
+    extern const uint8_t humidity_json_data[];
+    extern const size_t humidity_json_size;
+
+    lv_obj_t *lottie = lv_lottie_create(screen_);
+    lv_lottie_set_src_data(lottie, humidity_json_data, humidity_json_size);
+    lv_obj_align(lottie, LV_ALIGN_TOP_RIGHT, -5, 5);
+    auto buffer = lv_malloc(64 * 64 * 4);
+    lv_lottie_set_buffer(lottie, 64, 64, buffer);
 
     lv_obj_add_event_cb(screen_, event_callback<ui_main_screen, &ui_main_screen::screen_callback>, LV_EVENT_ALL, this);
     ESP_LOGD(UI_TAG, "Main screen init done");
@@ -35,10 +44,10 @@ void ui_main_screen::set_sensor_value(sensor_id_index index, float value)
     if (index == sensor_id_index::humidity)
     {
         ESP_LOGI(UI_TAG, "Updating sensor %.*s to %g in main screen", get_sensor_name(index).size(), get_sensor_name(index).data(), value);
-        if (std::isnan(value)) 
+        if (std::isnan(value))
         {
             lv_label_set_text_static(humidity_label, "-");
-        } 
+        }
         else
         {
             lv_label_set_text_fmt(humidity_label, "%lu", static_cast<unsigned long>(std::round(value)));

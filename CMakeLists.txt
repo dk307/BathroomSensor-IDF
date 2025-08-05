@@ -8,9 +8,9 @@ include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 #LVGL custom config file setup
 idf_build_set_property(COMPILE_OPTIONS "-DLV_LVGL_H_INCLUDE_SIMPLE" APPEND)
 
-
 set(HOMEKIT_LIB_PATH ${CMAKE_CURRENT_LIST_DIR}/components/extra/esp-homekit-sdk/components/homekit)
-set(EXTRA_COMPONENT_DIRS ${HOMEKIT_LIB_PATH}/esp_hap_apple_profiles
+set(EXTRA_COMPONENT_DIRS ${CMAKE_CURRENT_LIST_DIR}/components/extra/rlottie
+                         ${HOMEKIT_LIB_PATH}/esp_hap_apple_profiles
                          ${HOMEKIT_LIB_PATH}/esp_hap_platform
                          ${HOMEKIT_LIB_PATH}/mu_srp
                          ${HOMEKIT_LIB_PATH}/hkdf-sha
