@@ -11,6 +11,15 @@ void ui_main_screen::init()
     refresh_timer_ = lv_timer_create(timer_callback<ui_main_screen, &ui_main_screen::update_slope>, 15000, this);
 
     lv_obj_clear_flag(screen_, LV_OBJ_FLAG_SCROLLABLE);
+    
+    
+    LV_IMG_DECLARE(humidity_background_png_img);
+    auto bg_image = lv_img_create(screen_);
+    lv_image_set_src(bg_image, &humidity_background_png_img);
+    lv_obj_set_size(bg_image, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    lv_obj_align(bg_image, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_style_img_opa(bg_image, 128, LV_PART_MAIN | LV_STATE_DEFAULT);
+
     auto label = create_a_label(screen_, &lv_font_montserrat_32, LV_ALIGN_TOP_MID, 0, 10);
     lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_label_set_text_static(label, "Humidity");
@@ -22,11 +31,6 @@ void ui_main_screen::init()
     lv_obj_set_style_text_align(humidity_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(humidity_label, &big_panel_font, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_label_set_text_static(humidity_label, "-");
-
-    auto humidity_image = lv_img_create(screen_);
-    LV_IMG_DECLARE(humidity_png_img);
-    lv_img_set_src(humidity_image, &humidity_png_img);
-    lv_obj_align(humidity_image, LV_ALIGN_TOP_RIGHT, -5, 5);
 
     // Create images for slope
     up_slope_arrows[0] = create_images_for_slope(LV_ALIGN_BOTTOM_LEFT, 5, -5, 0);
@@ -89,7 +93,7 @@ void ui_main_screen::set_sensor_value(sensor_id_index index, float value)
 void ui_main_screen::show_screen()
 {
     ESP_LOGI(UI_TAG, "Showing main screen");
-    lv_scr_load_anim(screen_, LV_SCR_LOAD_ANIM_FADE_IN, 300, 0, false);
+    lv_scr_load_anim(screen_, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);
 }
 
 void ui_main_screen::screen_callback(lv_event_t *e)

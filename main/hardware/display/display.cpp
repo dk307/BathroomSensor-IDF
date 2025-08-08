@@ -21,14 +21,14 @@ void lv_mem_deinit(void)
 {
 }
 
-void *lv_malloc_core(size_t size)
+void *lv_malloc_core(size_t size) 
 {
-    return heap_caps_malloc(size, MALLOC_CAP_8BIT | MALLOC_CAP_SPIRAM );
+    return heap_caps_malloc(size, MALLOC_CAP_SPIRAM);
 }
 
 void *lv_realloc_core(void *p, size_t new_size)
 {
-    return heap_caps_realloc(p, new_size,  MALLOC_CAP_8BIT | MALLOC_CAP_SPIRAM );
+    return heap_caps_realloc(p, new_size, MALLOC_CAP_SPIRAM);
 }
 
 void lv_free_core(void *p)
@@ -81,7 +81,7 @@ void display::begin()
     ESP_LOGI(DISPLAY_TAG, "Display initialized width:%ld height:%ld", screenWidth, screenHeight);
 
     ESP_LOGI(DISPLAY_TAG, "LV initialized");
-    const int buffer_size = 80;
+    const int buffer_size = screenHeight / 3;
     constexpr auto bytesPerPixel = (LV_COLOR_FORMAT_GET_SIZE(LV_COLOR_FORMAT_RGB565));
 
     const auto display_buffer_size = screenWidth * buffer_size * bytesPerPixel;

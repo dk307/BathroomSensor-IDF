@@ -28,7 +28,7 @@ void ui_launcher_screen::init()
 void ui_launcher_screen::show_screen()
 {
     update_button_timer(std::nullopt);
-    lv_scr_load_anim(screen_, LV_SCR_LOAD_ANIM_FADE_IN, 300, 0, false);
+    lv_scr_load_anim(screen_, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);
 }
 
 void ui_launcher_screen::update_button_timer(const std::optional<uint32_t> &data)

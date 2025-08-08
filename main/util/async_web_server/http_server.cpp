@@ -28,7 +28,7 @@ void http_server::begin()
     config.max_uri_handlers = 45;
     config.ctrl_port = 32760;
     config.core_id = esp32::http_server_core;
-    config.stack_size = 6 * 1024;
+    config.stack_size = 8 * 1024;
     config.lru_purge_enable = true;
 
     CHECK_THROW_ESP(httpd_start(&server_, &config));
