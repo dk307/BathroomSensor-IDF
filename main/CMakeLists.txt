@@ -40,6 +40,7 @@ idf_component_register(SRCS "main.cpp"
                             "generated/display/src/upward_arrow_2.png.c"
                             "generated/display/src/upward_arrow.png.c"
                             "generated/display/src/humidity_background.png.c"
+                            "generated/display/src/main_screen_font.c"
                                 
                     INCLUDE_DIRS "."
                     REQUIRES fatfs spi_flash LovyanGFX lvgl mbedtls esp_wifi 

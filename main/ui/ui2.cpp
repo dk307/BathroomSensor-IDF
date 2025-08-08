@@ -72,7 +72,7 @@ void ui::init()
     lv_obj_set_size(button_timer_label_, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
     lv_obj_align(button_timer_label_, LV_ALIGN_BOTTOM_MID, -10, 0);
     lv_obj_set_style_text_align(button_timer_label_, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(button_timer_label_, &lv_font_montserrat_32, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(button_timer_label_, &lv_font_montserrat_28, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(button_timer_label_, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_flag(button_timer_label_, LV_OBJ_FLAG_HIDDEN);
 

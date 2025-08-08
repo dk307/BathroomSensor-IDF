@@ -6,6 +6,7 @@
 #include <lvgl.h>
 
 LV_FONT_DECLARE(big_panel_font);
+LV_FONT_DECLARE(main_screen_font);
 
 class ui_screen : esp32::noncopyable
 {
