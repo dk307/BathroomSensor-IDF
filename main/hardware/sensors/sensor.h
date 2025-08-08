@@ -259,17 +259,17 @@ template <uint16_t countT> class sensor_history_t
     // Calculates the linear trend (slope)
     // Returns a float representing the slope of the best-fit line.
     // A positive slope means increasing trend, negative means decreasing.
-    float get_slope(size_t x) const
+    double get_slope(size_t last_values_consider) const
     {
         std::lock_guard<esp32::semaphore> lock(data_mutex_);
 
         const auto n_total = last_x_values_.size();
-        if (n_total < 2 || x < 2)
+        if (n_total < 2 || last_values_consider < 2)
         {
             return 0.0f;
         }
 
-        const size_t n = std::min(x, n_total);
+        const size_t n = std::min(last_values_consider, n_total);
         const size_t offset = n_total - n;
 
         double sum_x = (n - 1) * n / 2.0;
@@ -278,13 +278,13 @@ template <uint16_t countT> class sensor_history_t
         double sum_y = 0.0;
         double sum_xy = 0.0;
 
-        float last_valid_value = 0.0f;
+        auto last_valid_value = 0.0f;
         bool has_valid = false;
 
         // Find first valid value
         for (size_t i = 0; i < n; ++i)
         {
-            float val = last_x_values_[offset + i];
+            auto val = last_x_values_[offset + i];
             if (!std::isnan(val))
             {
                 last_valid_value = val;
@@ -307,8 +307,8 @@ template <uint16_t countT> class sensor_history_t
             sum_xy += i * y;
         }
 
-        double denominator = n * sum_x2 - sum_x * sum_x;
-        return (denominator == 0.0) ? 0.0f : static_cast<float>((n * sum_xy - sum_x * sum_y) / denominator);
+        const double denominator = n * sum_x2 - sum_x * sum_x;
+        return (denominator == 0.0) ? 0.0f : (n * sum_xy - sum_x * sum_y) / denominator;
     }
 
   private:
@@ -321,12 +321,12 @@ template <uint8_t reads_per_minuteT, uint16_t minutesT> class sensor_history_min
   public:
     static constexpr auto total_minutes = minutesT;
     static constexpr auto reads_per_minute = reads_per_minuteT;
-    static constexpr auto sensor_interval = (60u * 1000 / reads_per_minute);
+    static constexpr auto sensor_interval_ms = (60u * 1000 / reads_per_minute);
 
     float get_slope_per_minute(uint8_t last_minutes_to_consider) const
     {
         const auto slope = sensor_history_t<reads_per_minuteT * minutesT>::get_slope(reads_per_minuteT * last_minutes_to_consider);
-        return (60u * slope) / sensor_interval;
+        return (60u * 1000 * slope) / sensor_interval_ms;
     }
 };
 

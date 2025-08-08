@@ -15,7 +15,7 @@ template <class T> bool hardware::read_sensor_if_time(T &sensor, uint64_t &last_
 {
     bool updated = false;
     const auto now = esp32::millis();
-    if (now - last_read >= sensor_history::sensor_interval)
+    if (now - last_read >= sensor_history::sensor_interval_ms)
     {
         for (auto &&value : sensor.read())
         {
@@ -97,7 +97,7 @@ void hardware::sensor_task_ftn()
         do
         {
             read_sht3x_sensors();
-            vTaskDelay(pdMS_TO_TICKS(sensor_history::sensor_interval / 50));
+            vTaskDelay(pdMS_TO_TICKS(sensor_history::sensor_interval_ms / 50));
 
         } while (true);
     }
