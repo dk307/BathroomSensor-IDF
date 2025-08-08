@@ -41,7 +41,7 @@ class ui_screen : esp32::noncopyable
 
     void create_press_back_message();
     void set_default_screen_color();
-    void set_background_image(const void * src);
+    void set_icon_as_background_image(const void * src);
     lv_obj_t *create_screen_title_static(lv_coord_t y_ofs, const char *title);
 
     static lv_obj_t *create_a_label(lv_obj_t *parent, const lv_font_t *font, lv_align_t align, lv_coord_t x_ofs, lv_coord_t y_ofs);

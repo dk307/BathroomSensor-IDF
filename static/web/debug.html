@@ -30,13 +30,6 @@
           </div>
         </div>
 
-        <div class="col">
-          <div class="btn-group mx-3">
-            <button type="button" class="btn btn-outline-primary" id="startSDLoggingId">Start SD Card logging</button>
-            <button type="button" class="btn btn-outline-primary" id="stopSDLoggingId">Stop SD Card logging</button>
-          </div>
-        </div>
-
         <div class="col-4">
           <div class="input-group">
             <span class="input-group-text">Tag</span>
@@ -124,14 +117,6 @@
 
     document.getElementById('stopWebLoggingId').addEventListener('click', function () {
       ajaxPost("/api/log/webstop", "", "Web Logging disable");
-    });
-
-    document.getElementById('startSDLoggingId').addEventListener('click', function () {
-      ajaxPost("/api/log/sdstart", "", "SD Card Logging enable");
-    });
-
-    document.getElementById('stopSDLoggingId').addEventListener('click', function () {
-      ajaxPost("/api/log/sdstop", "", "SD Card Logging disable");
     });
 
     document.getElementById('debugTag').addEventListener('click', function () {

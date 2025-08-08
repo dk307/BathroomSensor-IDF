@@ -16,13 +16,13 @@ void ui_information_screen::init()
     create_press_back_message();
 
     LV_IMG_DECLARE(info_png_img);
-    set_background_image(&info_png_img);
+    set_icon_as_background_image(&info_png_img);
 }
 
 void ui_information_screen::show_screen()
 {
     ESP_LOGI(UI_TAG, "Showing information screen");
-    lv_scr_load_anim(screen_, LV_SCR_LOAD_ANIM_FADE_IN, 300, 0, false);
+    lv_scr_load_anim(screen_, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);
 }
 
 void ui_information_screen::screen_callback(lv_event_t *e)

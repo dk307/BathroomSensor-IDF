@@ -99,7 +99,7 @@ void ui_screen::update_button_timer(const std::optional<uint32_t> &data)
     }
 }
 
-void ui_screen::set_background_image(const void *src)
+void ui_screen::set_icon_as_background_image(const void *src)
 {
     auto bg_image = lv_img_create(screen_);
     lv_img_set_src(bg_image, src);

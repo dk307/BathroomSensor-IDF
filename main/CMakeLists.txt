@@ -36,7 +36,11 @@ idf_component_register(SRCS "main.cpp"
                             "generated/display/src/nowifi.png.c"
                             "generated/display/src/wifi.png.c"
                             "generated/display/src/info.png.c"
-
+                            "generated/display/src/upward_arrow_1.png.c"
+                            "generated/display/src/upward_arrow_2.png.c"
+                            "generated/display/src/upward_arrow.png.c"
+                            "generated/display/src/humidity_background.png.c"
+                                
                     INCLUDE_DIRS "."
                     REQUIRES fatfs spi_flash LovyanGFX lvgl mbedtls esp_wifi 
                              esp_hw_support app_update esp_http_server esp-tls espcoredump esp_timer
