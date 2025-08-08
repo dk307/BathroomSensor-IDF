@@ -107,26 +107,26 @@ void ui::init_no_wifi_image()
 void ui::top_message_timer_cb(lv_timer_t *e)
 {
     auto p_this = reinterpret_cast<ui *>(lv_timer_get_user_data(e));
-    lv_obj_add_flag(p_this->top_message_panel_, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(p_this->bottom_message_panel_, LV_OBJ_FLAG_HIDDEN);
     lv_timer_pause(p_this->top_message_timer_);
 }
 
 void ui::init_top_message()
 {
-    top_message_panel_ = lv_obj_create(lv_layer_sys());
-    lv_obj_set_size(top_message_panel_, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-    lv_obj_align(top_message_panel_, LV_ALIGN_TOP_MID, 0, 15);
-    lv_obj_set_style_border_width(top_message_panel_, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(top_message_panel_, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(top_message_panel_, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(top_message_panel_, LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(top_message_panel_, lv_color_hex(0xF5F5F5), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_add_flag(top_message_panel_, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(top_message_panel_, LV_OBJ_FLAG_EVENT_BUBBLE);
-    lv_obj_add_flag(top_message_panel_, LV_OBJ_FLAG_GESTURE_BUBBLE);
+    bottom_message_panel_ = lv_obj_create(lv_layer_sys());
+    lv_obj_set_size(bottom_message_panel_, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    lv_obj_align(bottom_message_panel_, LV_ALIGN_BOTTOM_MID, 0, -15);
+    lv_obj_set_style_border_width(bottom_message_panel_, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(bottom_message_panel_, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(bottom_message_panel_, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(bottom_message_panel_, LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_color(bottom_message_panel_, lv_color_hex(0xF5F5F5), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_add_flag(bottom_message_panel_, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(bottom_message_panel_, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_obj_add_flag(bottom_message_panel_, LV_OBJ_FLAG_GESTURE_BUBBLE);
 
-    top_message_label_ = lv_label_create(top_message_panel_);
-    lv_obj_set_size(top_message_panel_, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    top_message_label_ = lv_label_create(bottom_message_panel_);
+    lv_obj_set_size(bottom_message_panel_, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
     lv_obj_align(top_message_label_, LV_ALIGN_TOP_LEFT, 0, 0);
     lv_label_set_long_mode(top_message_label_, LV_LABEL_LONG_SCROLL);
     lv_obj_set_style_text_align(top_message_label_, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -149,7 +149,7 @@ void ui::show_top_level_message(const std::string &message, uint32_t period)
 {
     ESP_LOGI(UI_TAG, "Showing top level message:%s", message.c_str());
     lv_label_set_text(top_message_label_, message.c_str());
-    lv_obj_clear_flag(top_message_panel_, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(bottom_message_panel_, LV_OBJ_FLAG_HIDDEN);
     lv_timer_reset(top_message_timer_);
     lv_timer_resume(top_message_timer_);
 }
@@ -214,11 +214,6 @@ void ui::update_button_timer(const std::optional<uint32_t> &data)
     }
 }
 
-bool ui::is_night_theme_enabled()
-{
-    return night_theme_;
-}
-
 void ui::show_home_screen()
 {
     main_screen_.show_screen();
@@ -236,7 +231,7 @@ void ui::show_launcher_screen()
 {
     if (!launcher_screen_.is_active())
     {
-        lv_obj_add_flag(top_message_panel_, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(bottom_message_panel_, LV_OBJ_FLAG_HIDDEN);
         launcher_screen_.show_screen();
     }
 }
@@ -245,7 +240,7 @@ void ui::show_wifi_enroll_screen()
 {
     if (!wifi_enroll_screen_.is_active())
     {
-        lv_obj_add_flag(top_message_panel_, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(bottom_message_panel_, LV_OBJ_FLAG_HIDDEN);
         wifi_enroll_screen_.show_screen();
     }
 }

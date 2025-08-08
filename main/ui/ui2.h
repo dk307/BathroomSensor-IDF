@@ -27,7 +27,7 @@ class ui final : public ui_inter_screen_interface, esp32::noncopyable
     void update_button_timer(const std::optional<uint32_t> &data);
 
     // ui_inter_screen_interface
-    bool is_night_theme_enabled() override;
+
     void show_home_screen() override;
     void show_setting_screen() override;
     void show_launcher_screen() override;
@@ -36,7 +36,6 @@ class ui final : public ui_inter_screen_interface, esp32::noncopyable
   private:
     config &config_;
     ui_interface &ui_interface_instance_;
-    bool night_theme_{false};
 
     constexpr static uint32_t top_message_timer_period = 10000;
 
@@ -46,7 +45,7 @@ class ui final : public ui_inter_screen_interface, esp32::noncopyable
     lv_anim_timeline_t *no_wifi_image_animation_timeline_{};
     lv_obj_t *button_timer_label_{};
 
-    lv_obj_t *top_message_panel_{};
+    lv_obj_t *bottom_message_panel_{};
     lv_obj_t *top_message_label_{};
     lv_timer_t *top_message_timer_{};
 

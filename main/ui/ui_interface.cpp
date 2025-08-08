@@ -42,12 +42,6 @@ wifi_status ui_interface::get_wifi_status()
     return wifi_manager_->get_wifi_status();
 }
 
-bool ui_interface::clean_sps_30()
-{
-    configASSERT(hardware_);
-    return true; // hardware_->clean_sps_30();
-}
-
 void ui_interface::start_wifi_enrollment()
 {
     configASSERT(hardware_);

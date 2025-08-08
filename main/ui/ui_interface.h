@@ -43,8 +43,6 @@ class ui_interface : public esp32::singleton<ui_interface>
     void forget_homekit_pairings();
     void reenable_homekit_pairing();
 
-    bool clean_sps_30();
-
     static std::string get_default_mac_address();
     static std::string get_version();
     static std::string get_reset_reason_string();
@@ -52,8 +50,7 @@ class ui_interface : public esp32::singleton<ui_interface>
     static std::string get_heap_info_str(uint32_t caps);
     static std::string get_up_time();
 
-    void update(config &config,
-                hardware &hardware, wifi_manager &wifi_manager, homekit_integration &homekit_integration)
+    void update(config &config, hardware &hardware, wifi_manager &wifi_manager, homekit_integration &homekit_integration)
     {
         config_ = &config;
         hardware_ = &hardware;
