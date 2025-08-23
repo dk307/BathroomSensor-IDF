@@ -21,7 +21,7 @@ void lv_mem_deinit(void)
 {
 }
 
-void *lv_malloc_core(size_t size) 
+void *lv_malloc_core(size_t size)
 {
     return heap_caps_malloc(size, MALLOC_CAP_SPIRAM);
 }
@@ -73,7 +73,6 @@ void display::begin()
     display_device_.setRotation(1);
     display_device_.initDMA();
     display_device_.startWrite();
-    display_device_.setBrightness(255);
 
     const auto screenWidth = display_device_.width();
     const auto screenHeight = display_device_.height();
@@ -194,6 +193,14 @@ void display::gui_task()
 
             if (result == pdPASS)
             {
+
+                if (notification_value & update_brightness_device_bit)
+                {
+                    constexpr auto night_brightness = 1000;                    
+                    const auto current_brightness = std::max(brightness1_, brightness2_);
+                    ui_instance_.set_day_or_night_theme(current_brightness <= night_brightness);
+                }
+
                 if (notification_value & task_notify_wifi_changed_bit)
                 {
                     ui_instance_.wifi_changed();
@@ -287,5 +294,15 @@ void display::app_event_handler(esp_event_base_t, int32_t event, void *data)
     case DEVICE_IDENTIFY:
         xTaskNotify(lvgl_task_.handle(), idenitfy_device_bit, eSetBits);
         break;
+    }
+}
+
+void display::set_screen_brightness(int value1, int value2)
+{
+    if ((brightness1_ != value1) || (brightness2_ != value2))
+    {
+        brightness1_ = value1;
+        brightness2_ = value2;
+        xTaskNotify(lvgl_task_.handle(), update_brightness_device_bit, eSetBits);
     }
 }

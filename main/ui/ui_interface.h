@@ -35,7 +35,6 @@ class ui_interface : public esp32::singleton<ui_interface>
     float get_sensor_slope_per_minute(uint8_t last_minutes_to_consider, sensor_id_index index);
     sensor_history::sensor_history_snapshot get_sensor_detail_info(sensor_id_index index);
     wifi_status get_wifi_status();
-    std::string get_sps30_error_register_status();
 
     void start_wifi_enrollment();
     void stop_wifi_enrollment();

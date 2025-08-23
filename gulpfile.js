@@ -188,7 +188,7 @@ function font_create(bpp, size, font, output, symbols_and_range) {
 
 gulp.task('display-fonts-big-font', function() {
   return font_create(
-      8, 172,
+      8, 225,
       './node_modules/@fontsource/montserrat/files/montserrat-all-500-normal.woff',
       'big_panel_font.c', '--symbols="0,1,2,3,4,5,6,7,8,9,-"');
 });

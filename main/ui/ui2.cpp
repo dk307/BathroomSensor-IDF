@@ -244,3 +244,22 @@ void ui::show_wifi_enroll_screen()
         wifi_enroll_screen_.show_screen();
     }
 }
+
+bool ui::is_night_theme_enabled()
+{
+    return night_theme_;
+}
+
+
+void ui::set_day_or_night_theme(bool night_mode)
+{
+    if (night_theme_ != night_mode)
+    {
+        ESP_LOGI(UI_TAG, "Setting theme :%d", night_mode);
+        night_theme_ = night_mode;
+        main_screen_.theme_changed();
+        settings_screen_.theme_changed();
+        launcher_screen_.theme_changed();
+        wifi_enroll_screen_.theme_changed();
+    }
+}

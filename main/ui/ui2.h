@@ -26,8 +26,11 @@ class ui final : public ui_inter_screen_interface, esp32::noncopyable
     void wifi_changed();
     void update_button_timer(const std::optional<uint32_t> &data);
 
+    void set_day_or_night_theme(bool night_mode);
+
     // ui_inter_screen_interface
 
+    bool is_night_theme_enabled() override;
     void show_home_screen() override;
     void show_setting_screen() override;
     void show_launcher_screen() override;
@@ -36,6 +39,7 @@ class ui final : public ui_inter_screen_interface, esp32::noncopyable
   private:
     config &config_;
     ui_interface &ui_interface_instance_;
+    bool night_theme_{false};
 
     constexpr static uint32_t top_message_timer_period = 10000;
 

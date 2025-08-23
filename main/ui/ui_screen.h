@@ -18,6 +18,10 @@ class ui_screen : esp32::noncopyable
 
     virtual void update_button_timer(const std::optional<uint32_t> &data);
 
+    virtual void theme_changed()
+    {
+    }
+
   protected:
     constexpr static int screen_width = 240;
     constexpr static int screen_height = 320;
@@ -42,7 +46,7 @@ class ui_screen : esp32::noncopyable
 
     void create_press_back_message();
     void set_default_screen_color();
-    void set_icon_as_background_image(const void * src);
+    void set_icon_as_background_image(const void *src);
     lv_obj_t *create_screen_title_static(lv_coord_t y_ofs, const char *title);
 
     static lv_obj_t *create_a_label(lv_obj_t *parent, const lv_font_t *font, lv_align_t align, lv_coord_t x_ofs, lv_coord_t y_ofs);

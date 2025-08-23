@@ -6,27 +6,25 @@
 void ui_main_screen::init()
 {
     ui_screen::init();
-    set_default_screen_color();
 
     refresh_timer_ = lv_timer_create(timer_callback<ui_main_screen, &ui_main_screen::update_slope>, 15000, this);
+
+    // set black bg color
+    lv_obj_set_style_bg_grad_dir(screen_, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(screen_, lv_color_hex(0), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_clear_flag(screen_, LV_OBJ_FLAG_SCROLLABLE);
 
     LV_IMG_DECLARE(humidity_background_png_img);
-    auto bg_image = lv_img_create(screen_);
+    bg_image = lv_img_create(screen_);
     lv_image_set_src(bg_image, &humidity_background_png_img);
     lv_obj_set_size(bg_image, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
     lv_obj_align(bg_image, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_img_opa(bg_image, 128, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    auto label = create_a_label(screen_, &main_screen_font, LV_ALIGN_TOP_MID, 0, 10);
-    lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_label_set_text_static(label, "HUMIDITY");
-
     humidity_label = lv_label_create(screen_);
     lv_obj_set_size(humidity_label, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-    lv_obj_align(humidity_label, LV_ALIGN_CENTER, 0, 15);
-    lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL);
+    lv_obj_align(humidity_label, LV_ALIGN_CENTER, 0, 5);
     lv_obj_set_style_text_align(humidity_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(humidity_label, &big_panel_font, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_label_set_text_static(humidity_label, "-");
@@ -38,6 +36,7 @@ void ui_main_screen::init()
     down_slope_arrows[1] = create_images_for_slope(LV_ALIGN_BOTTOM_RIGHT, -5, -5, 1800);
 
     update_slope(nullptr);
+    theme_changed();
 
     lv_obj_add_event_cb(screen_, event_callback<ui_main_screen, &ui_main_screen::screen_callback>, LV_EVENT_ALL, this);
     ESP_LOGD(UI_TAG, "Main screen init done");
@@ -152,4 +151,23 @@ void ui_main_screen::update_slope(lv_timer_t *)
             lv_obj_clear_flag(img_list[arrow_index], LV_OBJ_FLAG_HIDDEN);
         }
     }
+}
+
+void ui_main_screen::theme_changed()
+{
+    const lv_color_t night_mode_labels_text_color = lv_color_hex(0x929292);
+    const lv_color_t day_mode_labels_text_color = lv_color_hex(0xEDEADE);
+
+    const auto night_theme = inter_screen_interface_.is_night_theme_enabled();
+    if (night_theme)
+    {
+        lv_obj_add_flag(bg_image, LV_OBJ_FLAG_HIDDEN);
+    }
+    else
+    {
+        lv_obj_clear_flag(bg_image, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    lv_obj_set_style_text_color(humidity_label, night_theme ? night_mode_labels_text_color : day_mode_labels_text_color,
+                                LV_PART_MAIN | LV_STATE_DEFAULT);
 }

@@ -186,11 +186,6 @@ std::string ui_interface::get_default_mac_address()
     return std::string(mac_address);
 }
 
-std::string ui_interface::get_sps30_error_register_status()
-{
-    configASSERT(hardware_);
-    return ""; // hardware_->get_sps30_error_register_status();
-}
 
 void ui_interface::get_nw_info(ui_interface::information_table_type &table)
 {

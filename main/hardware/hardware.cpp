@@ -87,6 +87,8 @@ void hardware::sensor_task_ftn()
         sht3x_sensor1_.init(I2C_NUM_0, GPIO_NUM_42, GPIO_NUM_2);
         sht3x_sensor2_.init(I2C_NUM_1, GPIO_NUM_38, GPIO_NUM_39);
 
+        photo_resistors_.init({ADC_CHANNEL_7, ADC_CHANNEL_0}); // GPIO8
+
         // Wait until all sensors are ready
         vTaskDelay(initial_delay);
 
@@ -97,6 +99,10 @@ void hardware::sensor_task_ftn()
         do
         {
             read_sht3x_sensors();
+            read_sensor_if_time(photo_resistors_, photo_resistors_last_read_);
+
+            display_.set_screen_brightness(get_sensor_value(sensor_id_index::photo_resistor_1), get_sensor_value(sensor_id_index::photo_resistor_2));
+
             vTaskDelay(pdMS_TO_TICKS(sensor_history::sensor_interval_ms / 50));
 
         } while (true);
