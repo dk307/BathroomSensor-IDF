@@ -338,6 +338,8 @@ constexpr std::array<sensor_definition, total_sensors> sensor_definitions{
     sensor_definition{"Humidity-1", "⁒", no_level.data(), no_level.size(), 0, 100, 1},
     sensor_definition{"Humidity-2", "⁒", no_level.data(), no_level.size(), 0, 100, 1},
     sensor_definition{"Humidity", "⁒", no_level.data(), no_level.size(), 0, 100, 1},
+    sensor_definition{"Photo Register 1", "⁒", no_level.data(), no_level.size(), 0, 3.3, 0.0001},
+    sensor_definition{"Photo Register 2", "⁒", no_level.data(), no_level.size(), 0, 3.3, 0.0001},
 };
 
 constexpr auto &&get_sensor_definition(sensor_id_index id)

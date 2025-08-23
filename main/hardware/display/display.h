@@ -15,7 +15,8 @@ class display final : public esp32::singleton<display>
 {
   public:
     void begin();
-
+    void set_screen_brightness(int value, int value2);
+ 
   private:
     display(config &config, ui_interface &ui_interface)
         : lvgl_task_([this] { display::gui_task(); }), ui_interface_(ui_interface), ui_instance_(config, ui_interface)
@@ -28,6 +29,8 @@ class display final : public esp32::singleton<display>
     LGFX display_device_;
     esp32::task lvgl_task_;
     ui_interface &ui_interface_;
+    int brightness1_{4095};
+    int brightness2_{4095};
 
     lv_display_t *lv_display_{};
     lv_color_t *disp_draw_buf_{};
@@ -62,4 +65,5 @@ class display final : public esp32::singleton<display>
     constexpr static uint32_t set_info_screen_changed_bit = BIT(total_sensors + 8);
     constexpr static uint32_t set_wifi_enroll_screen_changed_bit = BIT(total_sensors + 9);
     constexpr static uint32_t set_update_button_timer_changed_bit = BIT(total_sensors + 10);
+    constexpr static uint32_t update_brightness_device_bit = BIT(total_sensors + 11);
 };

@@ -3,6 +3,7 @@ idf_component_register(SRCS "main.cpp"
                             "hardware/display/display.cpp" 
                             "hardware/hardware.cpp" 
                             "hardware/sensors/sht3x_sensor_device.cpp" 
+                            "hardware/sensors/photo_resistor_adc.cpp" 
                             "ui/ui2.cpp"
                             "ui/ui_interface.cpp"
                             "ui/ui_screen.cpp"
@@ -40,10 +41,11 @@ idf_component_register(SRCS "main.cpp"
                             "generated/display/src/upward_arrow_2.png.c"
                             "generated/display/src/upward_arrow.png.c"
                             "generated/display/src/humidity_background.png.c"
+                            "generated/display/src/main_screen_font.c"
                                 
                     INCLUDE_DIRS "."
                     REQUIRES fatfs spi_flash LovyanGFX lvgl mbedtls esp_wifi 
-                             esp_hw_support app_update esp_http_server esp-tls espcoredump esp_timer
+                             esp_hw_support app_update esp_http_server esp-tls espcoredump esp_timer esp_adc
                              esp_idf_lib_helpers i2cdev sht3x button
                              esp_hap_core esp_hap_apple_profiles json_generator)
 

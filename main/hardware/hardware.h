@@ -3,6 +3,7 @@
 #include "hardware/inbuild_led.h"
 #include "hardware/sensors/sensor.h"
 #include "hardware/sensors/sht3x_sensor_device.h"
+#include "hardware/sensors/photo_resistor_adc.h"
 #include "ui/ui_interface.h"
 #include "util/psram_allocator.h"
 #include "util/singleton.h"
@@ -58,6 +59,10 @@ class hardware final : public esp32::singleton<hardware>
     // SHT31 - Sensor 2
     sht3x_sensor_device sht3x_sensor2_{sensor_id_index::humidity2};
     uint64_t sht3x_sensor_last_read2_ = 0;
+
+    // Photo Resistor Sensor 1]
+    photo_resistor_adc photo_resistors_{{sensor_id_index::photo_resistor_1, sensor_id_index::photo_resistor_2}};
+    uint64_t photo_resistors_last_read_ = 0;
 
     inbuild_led led_;
 

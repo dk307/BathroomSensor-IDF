@@ -10,7 +10,9 @@ enum class sensor_id_index : uint8_t
     first = humidity1,
     humidity2,
     humidity, // average
-    last = humidity,
+    photo_resistor_1,
+    photo_resistor_2,
+    last = photo_resistor_2,
 };
 
 constexpr auto total_sensors = static_cast<size_t>(sensor_id_index::last) + 1;

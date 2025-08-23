@@ -42,12 +42,6 @@ wifi_status ui_interface::get_wifi_status()
     return wifi_manager_->get_wifi_status();
 }
 
-bool ui_interface::clean_sps_30()
-{
-    configASSERT(hardware_);
-    return true; // hardware_->clean_sps_30();
-}
-
 void ui_interface::start_wifi_enrollment()
 {
     configASSERT(hardware_);
@@ -192,11 +186,6 @@ std::string ui_interface::get_default_mac_address()
     return std::string(mac_address);
 }
 
-std::string ui_interface::get_sps30_error_register_status()
-{
-    configASSERT(hardware_);
-    return ""; // hardware_->get_sps30_error_register_status();
-}
 
 void ui_interface::get_nw_info(ui_interface::information_table_type &table)
 {

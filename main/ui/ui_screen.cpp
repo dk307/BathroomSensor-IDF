@@ -67,7 +67,7 @@ void ui_screen::update_table(lv_obj_t *table, const ui_interface::information_ta
 
 lv_obj_t *ui_screen::create_screen_title_static(lv_coord_t y_ofs, const char *title)
 {
-    auto label = create_a_label(screen_, &lv_font_montserrat_32, LV_ALIGN_TOP_MID, 0, y_ofs);
+    auto label = create_a_label(screen_, &lv_font_montserrat_28, LV_ALIGN_TOP_MID, 0, y_ofs);
     lv_label_set_text_static(label, title);
     return label;
 }

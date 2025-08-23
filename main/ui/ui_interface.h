@@ -35,15 +35,12 @@ class ui_interface : public esp32::singleton<ui_interface>
     float get_sensor_slope_per_minute(uint8_t last_minutes_to_consider, sensor_id_index index);
     sensor_history::sensor_history_snapshot get_sensor_detail_info(sensor_id_index index);
     wifi_status get_wifi_status();
-    std::string get_sps30_error_register_status();
 
     void start_wifi_enrollment();
     void stop_wifi_enrollment();
 
     void forget_homekit_pairings();
     void reenable_homekit_pairing();
-
-    bool clean_sps_30();
 
     static std::string get_default_mac_address();
     static std::string get_version();
@@ -52,8 +49,7 @@ class ui_interface : public esp32::singleton<ui_interface>
     static std::string get_heap_info_str(uint32_t caps);
     static std::string get_up_time();
 
-    void update(config &config,
-                hardware &hardware, wifi_manager &wifi_manager, homekit_integration &homekit_integration)
+    void update(config &config, hardware &hardware, wifi_manager &wifi_manager, homekit_integration &homekit_integration)
     {
         config_ = &config;
         hardware_ = &hardware;

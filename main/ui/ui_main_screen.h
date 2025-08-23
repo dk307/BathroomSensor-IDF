@@ -11,8 +11,11 @@ class ui_main_screen final : public ui_screen
     void set_sensor_value(sensor_id_index index, float value);
     void show_screen();
 
+    void theme_changed() override;
+
   private:
     lv_obj_t *humidity_label{};
+    lv_obj_t *bg_image{};
     lv_timer_t *refresh_timer_{};
 
     // images for slope
